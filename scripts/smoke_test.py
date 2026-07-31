@@ -1,6 +1,6 @@
 """Run a basic manual check of the installed package."""
 
-from your_project import greet
+from adventurers_guild import greet
 
 
 def main() -> None:

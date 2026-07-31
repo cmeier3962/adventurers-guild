@@ -2,8 +2,8 @@
 
 import pytest
 
-from your_project import greet
-from your_project.__main__ import main
+from adventurers_guild import greet
+from adventurers_guild.__main__ import main
 
 
 def test_greet_with_name() -> None:

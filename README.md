@@ -21,7 +21,7 @@ A modern starting point for Python projects using:
 ├── scripts/
 │   └── smoke_test.py
 ├── src/
-│   └── your_project/
+│   └── adventurers_guild/
 │       ├── __init__.py
 │       ├── __main__.py
 │       └── main.py
@@ -36,7 +36,7 @@ A modern starting point for Python projects using:
 
 ### What belongs where
 
-- `src/your_project/`: application or reusable package code
+- `src/adventurers_guild/`: application or reusable package code
 - `tests/`: automated tests
 - `scripts/`: optional development and maintenance scripts
 - `.github/workflows/`: GitHub Actions workflows
@@ -78,7 +78,7 @@ cd <repository-name>
 Rename the package directory:
 
 ```powershell
-Rename-Item src\your_project src\my_project
+Rename-Item src\adventurers_guild src\my_project
 ```
 
 Use lowercase letters and underscores for the Python package directory.
@@ -88,7 +88,7 @@ Update the following values:
 1. Change `name` in `pyproject.toml`.
 2. Change the Hatch package path in `pyproject.toml`.
 3. Change the coverage package name in `pyproject.toml`.
-4. Replace imports containing `your_project`.
+4. Replace imports containing `adventurers_guild`.
 5. Update the project title and description in this README.
 
 ## Set up the project
@@ -114,7 +114,7 @@ You do not normally need to activate `.venv` manually.
 Run the package:
 
 ```powershell
-uv run python -m your_project
+uv run python -m adventurers_guild
 ```
 
 Run the smoke-test script:
