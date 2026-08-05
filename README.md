@@ -1,15 +1,77 @@
-# Python Project Template
+# Adventurer's Guild
 
-A modern starting point for Python projects using:
+A fantasy guild-management project built to practice modern Python development, object-oriented programming, automated testing, and API design.
 
-- Python 3.14
-- `uv` for Python and dependency management
-- the `src/` package layout
-- Ruff for linting and formatting
-- Pyright for static type checking
-- Pytest for automated testing
-- pytest-cov for coverage reporting
-- GitHub Actions for continuous integration
+The long-term goal is to manage adventurers, parties, inventories, and quests through a Python domain model and eventually expose the system through a FastAPI application.
+
+## Current features
+
+### Adventurers
+
+Adventurers currently have:
+
+- a unique ID
+- a validated username
+- an adventurer class
+- a level
+- a status
+
+Available adventurer classes:
+
+- Warrior
+- Mage
+- Rogue
+- Cleric
+- Ranger
+
+Available statuses:
+
+- Available
+- Assigned
+- Injured
+- Retired
+
+Supported behaviors include:
+
+- leveling up
+- becoming injured
+- recovering from injury
+- retiring
+- preventing invalid status transitions
+
+### Parties
+
+Parties currently support:
+
+- validated party names
+- a maximum size of four adventurers
+- adding available adventurers
+- preventing duplicate members
+- removing members
+- assigning one party leader
+- automatically clearing the leader when they leave
+- tracking member count
+- reporting available member slots
+- reporting whether the party is full
+
+Adding an adventurer to a party changes their status from `AVAILABLE` to `ASSIGNED`.
+
+Removing an adventurer changes their status back to `AVAILABLE`.
+
+## Planned features
+
+Future development may include:
+
+- party leader replacement
+- inventory and equipment management
+- items and item categories
+- quests and quest difficulty
+- quest assignment and completion
+- guild-wide adventurer and party management
+- FastAPI endpoints
+- Pydantic request and response models
+- SQLite persistence
+- SQLAlchemy integration
 
 ## Project structure
 
@@ -24,9 +86,14 @@ A modern starting point for Python projects using:
 │   └── adventurers_guild/
 │       ├── __init__.py
 │       ├── __main__.py
-│       └── main.py
+│       ├── adventurer.py
+│       ├── enums.py
+│       ├── main.py
+│       └── party.py
 ├── tests/
-│   └── test_main.py
+│   ├── test_adventurer.py
+│   ├── test_main.py
+│   └── test_party.py
 ├── .gitignore
 ├── .python-version
 ├── pyproject.toml
@@ -34,27 +101,13 @@ A modern starting point for Python projects using:
 └── uv.lock
 ```
 
-### What belongs where
-
-- `src/adventurers_guild/`: application or reusable package code
-- `tests/`: automated tests
-- `scripts/`: optional development and maintenance scripts
-- `.github/workflows/`: GitHub Actions workflows
-- `pyproject.toml`: project metadata, dependencies, and tool configuration
-- `uv.lock`: exact resolved dependency versions
-
 ## Requirements
 
-Install:
-
 - Git
+- Python 3.14
 - `uv`
 
-`uv` can also install and manage the Python version required by the project.
-
-### Install uv on Windows
-
-Using WinGet:
+Install `uv` on Windows with WinGet:
 
 ```powershell
 winget install --id astral-sh.uv -e
@@ -66,32 +119,14 @@ Restart the terminal after installation, then verify:
 uv --version
 ```
 
-## Create a project from this template
-
-Create a new repository using this template, then clone it:
-
-```powershell
-git clone <repository-url>
-cd <repository-name>
-```
-
-Rename the package directory:
-
-```powershell
-Rename-Item src\adventurers_guild src\my_project
-```
-
-Use lowercase letters and underscores for the Python package directory.
-
-Update the following values:
-
-1. Change `name` in `pyproject.toml`.
-2. Change the Hatch package path in `pyproject.toml`.
-3. Change the coverage package name in `pyproject.toml`.
-4. Replace imports containing `adventurers_guild`.
-5. Update the project title and description in this README.
-
 ## Set up the project
+
+Clone the repository:
+
+```powershell
+git clone https://github.com/cmeier3962/adventurers-guild.git
+cd adventurers-guild
+```
 
 Synchronize the environment:
 
@@ -99,17 +134,11 @@ Synchronize the environment:
 uv sync
 ```
 
-This command:
-
-- reads `pyproject.toml`
-- installs the required Python version when necessary
-- creates `.venv`
-- installs the project and development dependencies
-- updates `uv.lock`
+This command creates the project virtual environment and installs the project and its development dependencies.
 
 You do not normally need to activate `.venv` manually.
 
-## Run the application
+## Run the project
 
 Run the package:
 
@@ -123,7 +152,9 @@ Run the smoke-test script:
 uv run python scripts\smoke_test.py
 ```
 
-## Run automated tests
+## Run tests
+
+Run the complete test suite:
 
 ```powershell
 uv run pytest
@@ -131,9 +162,15 @@ uv run pytest
 
 The project requires at least 80% test coverage.
 
-## Run code-quality checks
+Run one test file without enforcing project-wide coverage:
 
-Lint the project:
+```powershell
+uv run pytest tests\test_party.py --no-cov
+```
+
+## Code-quality checks
+
+Run Ruff linting:
 
 ```powershell
 uv run ruff check .
@@ -145,102 +182,62 @@ Automatically repair safe lint violations:
 uv run ruff check . --fix
 ```
 
-Format the project:
-
-```powershell
-uv run ruff format .
-```
-
-Check formatting without modifying files:
-
-```powershell
-uv run ruff format --check .
-```
-
 Run static type checking:
 
 ```powershell
 uv run pyright
 ```
 
-## Recommended local validation
-
-Before committing changes, run:
+Run the complete local validation:
 
 ```powershell
 uv run ruff check .
-uv run ruff format --check .
 uv run pyright
 uv run pytest
 ```
 
-These are also run automatically by GitHub Actions.
+## Development workflow
 
-## Dependency management
+Development is completed on feature branches and merged into `main` through pull requests.
 
-Add a runtime dependency:
-
-```powershell
-uv add requests
-```
-
-Add a development dependency:
+Example:
 
 ```powershell
-uv add --dev pytest
+git switch -c feature/example-feature
+git push -u origin feature/example-feature
 ```
 
-Remove a dependency:
+Before committing:
 
 ```powershell
-uv remove requests
+uv run ruff check .
+uv run pyright
+uv run pytest
 ```
 
-Update compatible dependency versions:
+Then commit and push:
 
 ```powershell
-uv lock --upgrade
-uv sync
+git add -A
+git commit -m "Describe the completed change"
+git push
 ```
 
-Inspect the dependency tree:
+GitHub Actions runs the configured quality checks for pull requests targeting `main`.
 
-```powershell
-uv tree
-```
+## Learning goals
 
-Avoid editing `uv.lock` manually.
+This project is being used to practice:
 
-## uv compared with traditional pip
-
-A traditional Python workflow often requires several separate steps:
-
-```powershell
-python -m venv .venv
-.\.venv\Scripts\Activate.ps1
-python -m pip install -r requirements.txt
-python script.py
-```
-
-With `uv`, the equivalent workflow is usually:
-
-```powershell
-uv sync
-uv run python script.py
-```
-
-`uv` manages the virtual environment, Python version, dependencies, and lockfile as one project workflow.
-
-## Continuous integration
-
-The GitHub Actions workflow runs on pushes and pull requests targeting `main`.
-
-It verifies:
-
-- dependencies match `uv.lock`
-- Ruff linting passes
-- Ruff formatting passes
-- Pyright type checking passes
-- Pytest and coverage requirements pass
-
-A pull request should not be merged until these checks succeed.
+- object-oriented design
+- composition between classes
+- enums and state transitions
+- type annotations
+- validation and exception handling
+- pytest unit testing
+- test coverage
+- dependency management with `uv`
+- linting with Ruff
+- static type checking with Pyright
+- Git and GitHub workflows
+- API development with FastAPI
