@@ -4,13 +4,22 @@ from adventurers_guild.enums import AdventurerClass, AdventurerStatus
 
 class Party:
     """Represents a party of adventurers."""
+
     def __init__(
         self,
         party_id: str,
         name: str,
     ) -> None:
         self.party_id = party_id
-        self.name = name
+        
+        party_name = name.strip()
+        if party_name == "":
+            raise ValueError("Party name cannot be empty.")
+        if len(party_name) < 3 or len(party_name) > 30:
+            raise ValueError("Party name must be between 3 and 30 characters.")
+        self.name = party_name
+        
+        self.leader: Adventurer | None = None
         self.members: list[Adventurer] = []
         self.max_members: int = 4
 
@@ -23,7 +32,7 @@ class Party:
         if adventurer.status != AdventurerStatus.AVAILABLE:
             raise ValueError("Adventurer is not available to join the party.")
         
-        if len(self.members) >= self.max_members:
+        if self.is_full():
             raise ValueError(f"Cannot have more than {self.max_members} adventurers in a party!")
         
         self.members.append(adventurer)
@@ -35,5 +44,36 @@ class Party:
         if adventurer not in self.members:
             raise ValueError("Adventurer is not in the party.")
         
+        if self.leader is adventurer:
+            self.leader = None
+
         self.members.remove(adventurer)
         adventurer.status = AdventurerStatus.AVAILABLE
+
+
+    @property
+    def member_count(self) -> int:
+        """Returns the count of party members."""
+        return len(self.members)
+
+
+    def is_full(self) -> bool:
+        """Checks if party is full."""
+        return self.member_count >= self.max_members
+
+
+    def assign_leader(self, adventurer: Adventurer) -> None:
+        """Checks if adventurer exists in the party, then assigns them as leader."""
+        if adventurer not in self.members:
+            raise ValueError("Leader must be in the party.")
+        
+        if self.leader is not None:
+            raise ValueError(f"{self.leader.username} is already the party leader.")
+        
+        self.leader = adventurer
+
+
+    @property
+    def available_slots(self) -> int:
+        """Return the number of open member slots."""
+        return self.max_members - self.member_count
