@@ -168,7 +168,6 @@ def test_party_member_count_one() -> None:
 
 def test_available_slots_new_party() -> None:
     """Tests that a new party has all slots available."""
-    adventurer = Adventurer("adv-001", "Nox", AdventurerClass.WARRIOR, 1)
     party = Party("12345", "Nox's Party")
     assert party.available_slots == 4
 
