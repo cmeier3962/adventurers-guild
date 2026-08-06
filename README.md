@@ -1,8 +1,8 @@
 # Adventurer's Guild
 
-A fantasy guild-management project built to practice modern Python development, object-oriented programming, automated testing, and API design.
+The project currently models adventurers, parties, and quests through a tested Python domain model. 
 
-The long-term goal is to manage adventurers, parties, inventories, and quests through a Python domain model and eventually expose the system through a FastAPI application.
+The long-term goal is to expand it with inventories, equipment, skills, quest chains, persistence, and a FastAPI application.
 
 ## Current features
 
@@ -49,6 +49,7 @@ Parties currently support:
 - preventing duplicate members
 - removing members
 - assigning one party leader
+- replacing an existing party leader
 - automatically clearing the leader when they leave
 - tracking member count
 - reporting available member slots
@@ -58,16 +59,58 @@ Adding an adventurer to a party changes their status from `AVAILABLE` to `ASSIGN
 
 Removing an adventurer changes their status back to `AVAILABLE`.
 
+### Quests
+
+Quests currently have:
+
+- a unique ID
+- a validated name
+- a validated description
+- a difficulty
+- a gold reward
+- a progress status
+
+Available quest difficulties:
+
+- Easy
+- Normal
+- Hard
+- Elite
+- Master
+
+Available quest statuses:
+
+- Not Started
+- In Progress
+- Completed
+
+Supported behaviors include:
+
+- starting a quest
+- completing a quest
+- abandoning an active quest
+- preventing invalid status transitions
+
+New quests begin with a status of `NOT_STARTED`.
+
+Starting a quest changes its status to `IN_PROGRESS`.
+
+Only quests currently in progress can be completed. Completing a quest changes its status to `COMPLETED`.
+
+Abandoning an active quest returns its status to `NOT_STARTED`, allowing it to be accepted again later.
+
 ## Planned features
 
 Future development may include:
 
-- party leader replacement
+- assigning parties to quests
+- quest prerequisites and quest chains
+- adventurer-level requirements for quests
+- skill requirements for quests
 - inventory and equipment management
 - items and item categories
-- quests and quest difficulty
-- quest assignment and completion
-- guild-wide adventurer and party management
+- quest rewards beyond gold
+- guild-wide adventurer, party, and quest management
 - FastAPI endpoints
 - Pydantic request and response models
 - SQLite persistence
@@ -89,11 +132,13 @@ Future development may include:
 │       ├── adventurer.py
 │       ├── enums.py
 │       ├── main.py
-│       └── party.py
+│       ├── party.py
+│       └── quest.py
 ├── tests/
 │   ├── test_adventurer.py
 │   ├── test_main.py
-│   └── test_party.py
+│   ├── test_party.py
+│   └── test_quest.py
 ├── .gitignore
 ├── .python-version
 ├── pyproject.toml
