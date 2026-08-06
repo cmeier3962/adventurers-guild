@@ -16,3 +16,21 @@ class AdventurerStatus(StrEnum):
     ASSIGNED = "Assigned"
     INJURED = "Injured"
     RETIRED = "Retired"
+
+
+class QuestDifficulty(StrEnum):
+    """Available difficulties for quests."""
+    EASY = "Easy"
+    NORMAL = "Normal"
+    HARD = "Hard"
+    ELITE = "Elite"
+    MASTER = "Master"
+
+
+class QuestStatus(StrEnum):
+    """Available statuses for quest progress."""
+    NOT_STARTED = "Not Started"
+    IN_PROGRESS = "In Progress"
+    COMPLETED = "Completed"
+    FAILED = "Failed"
+    ABANDONED = "Abandoned"

@@ -1,8 +1,8 @@
 import pytest
 
-from adventurers_guild.party import Party
 from adventurers_guild.adventurer import Adventurer
 from adventurers_guild.enums import AdventurerClass, AdventurerStatus
+from adventurers_guild.party import Party
 
 
 ### ---------- Initialize Class Tests---------- ###

@@ -8,7 +8,7 @@ class Adventurer:
         adventurer_id: str, 
         username: str, 
         adventurer_class: AdventurerClass, 
-        level: int
+        level: int,
     ) -> None:
         
         self.adventurer_id = adventurer_id
