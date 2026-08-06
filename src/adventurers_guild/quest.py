@@ -1,5 +1,6 @@
 from adventurers_guild.adventurer import Adventurer
 from adventurers_guild.enums import AdventurerClass, AdventurerStatus, QuestDifficulty, QuestStatus
+from adventurers_guild.party import Party
 
 
 class Quest:
@@ -36,6 +37,8 @@ class Quest:
         self.reward_gold = reward_gold
         
         self.status = QuestStatus.NOT_STARTED
+        
+        self.assigned_party: Party | None = None
     
     
     def start(self) -> None:
@@ -60,3 +63,22 @@ class Quest:
             raise ValueError("Only quests in progress can be abandoned.")
         
         self.status = QuestStatus.NOT_STARTED
+    
+    
+    def assign_party(self, party: Party) -> None:
+        """Checks the following:
+            - Quest is not started
+            - Party has at least one member
+            - Party has a leader
+            - Quest does not already have a party assigned
+        """
+        if self.assigned_party is not None:
+            raise ValueError("Quest already has an assigned party.")
+        if self.status is not QuestStatus.NOT_STARTED:
+            raise ValueError("Parties can only be assigned to quests that have not started.")
+        if party.member_count == 0:
+            raise ValueError("Party must have at least one member.")
+        if party.leader is None:
+            raise ValueError("Party must have a leader.")
+        
+        self.assigned_party = party

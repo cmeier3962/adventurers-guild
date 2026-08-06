@@ -235,3 +235,115 @@ def test_abandon_quest_not_in_progress() -> None:
         quest.abandon()
     
     assert quest.status is QuestStatus.NOT_STARTED
+
+
+### ---------- Assign Party Tests ---------- ###
+def test_assign_party() -> None:
+    """Tests that the party is assigned to the quest."""
+    adventurer = Adventurer("adv-001", "Nox", AdventurerClass.WARRIOR, 1)
+    party = Party("12345", "Nox's Party")
+    quest = Quest(
+                "quest-001", 
+                "New Beginnings", 
+                "This quest will be the start of the tutorial.", 
+                QuestDifficulty.EASY, 
+                100,
+            )
+    party.add_member(adventurer)
+    party.assign_leader(adventurer)
+    assert quest.assigned_party is None
+    assert quest.status is QuestStatus.NOT_STARTED
+    assert party.member_count == 1
+    assert party.leader is adventurer
+    
+    quest.assign_party(party)
+    assert quest.assigned_party is party
+
+
+def test_party_already_assigned_quest() -> None:
+    """Tests that assign party fails when assigned party is not None."""
+    adventurer = Adventurer("adv-001", "Nox", AdventurerClass.WARRIOR, 1)
+    party = Party("12345", "Nox's Party")
+    quest = Quest(
+                "quest-001", 
+                "New Beginnings", 
+                "This quest will be the start of the tutorial.", 
+                QuestDifficulty.EASY, 
+                100,
+            )
+    party.add_member(adventurer)
+    party.assign_leader(adventurer)
+    quest.assign_party(party)
+    assert quest.assigned_party is party
+    
+    adventurer2 = Adventurer("adv-002", "Box", AdventurerClass.WARRIOR, 1)
+    party2 = Party("67890", "Box's Party")
+    party2.add_member(adventurer2)
+    party2.assign_leader(adventurer2)
+    
+    with pytest.raises(ValueError, match="Quest already has an assigned party"):
+        quest.assign_party(party2)
+    
+    assert quest.assigned_party is party
+
+
+def test_assign_party_to_quest_in_progress() -> None:
+    """Tests that assign party fails when quest is already in progress."""
+    adventurer = Adventurer("adv-001", "Nox", AdventurerClass.WARRIOR, 1)
+    party = Party("12345", "Nox's Party")
+    quest = Quest(
+                "quest-001", 
+                "New Beginnings", 
+                "This quest will be the start of the tutorial.", 
+                QuestDifficulty.EASY, 
+                100,
+            )
+    party.add_member(adventurer)
+    party.assign_leader(adventurer)
+    quest.start()
+    assert quest.status is QuestStatus.IN_PROGRESS
+    assert quest.assigned_party is None
+    
+    with pytest.raises(ValueError, match="Parties can only be assigned to quests that have not started"):
+        quest.assign_party(party)
+    
+    assert quest.assigned_party is None
+
+
+def test_assign_party_to_quest_with_no_members() -> None:
+    """Tests that assign party fails when party has no members."""
+    party = Party("12345", "Nox's Party")
+    quest = Quest(
+                "quest-001", 
+                "New Beginnings", 
+                "This quest will be the start of the tutorial.", 
+                QuestDifficulty.EASY, 
+                100,
+            )
+    assert party.member_count == 0
+    
+    with pytest.raises(ValueError, match="Party must have at least one member"):
+        quest.assign_party(party)
+    
+    assert quest.assigned_party is None
+
+
+def test_assign_party_to_quest_with_no_leader() -> None:
+    """Tests that assign party fails when party has no leader."""
+    adventurer = Adventurer("adv-001", "Nox", AdventurerClass.WARRIOR, 1)
+    party = Party("12345", "Nox's Party")
+    quest = Quest(
+                "quest-001", 
+                "New Beginnings", 
+                "This quest will be the start of the tutorial.", 
+                QuestDifficulty.EASY, 
+                100,
+            )
+    party.add_member(adventurer)
+    assert party.member_count == 1
+    assert party.leader is None
+    
+    with pytest.raises(ValueError, match="Party must have a leader"):
+        quest.assign_party(party)
+    
+    assert quest.assigned_party is None
