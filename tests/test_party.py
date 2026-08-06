@@ -15,6 +15,31 @@ def test_party() -> None:
     assert party.members == []
 
 
+### ---------- Party Name Tests ---------- ###
+def test_party_name_whitespace_only() -> None:
+    """Tests that the party name contains only whitespaces."""
+    with pytest.raises(ValueError, match="Party name cannot be empty"):
+        Party("12345", "   ")
+
+
+def test_party_name_length_short() -> None:
+    """Tests that a party name shorter than 3 characters is rejected."""
+    with pytest.raises(ValueError, match="Party name must be between 3 and 30 characters"):
+        Party("12345", "No")
+
+
+def test_party_name_length_long() -> None:
+    """Tests that a party name longer than 30 characters is rejected."""
+    with pytest.raises(ValueError, match="Party name must be between 3 and 30 characters"):
+        Party("12345", "Nox's Party Name Is Far Too Long")
+
+
+def test_party_name_whitespace_before_after() -> None:
+    """Tests that a party name with leading and trailing whitespaces are removed."""
+    party = Party("12345", "     Nox's Party     ")
+    assert party.name == "Nox's Party"
+
+
 ### ---------- Add to Party Tests ---------- ###
 def test_add_member() -> None:
     """Tests adding an adventurer to the party."""
@@ -141,32 +166,22 @@ def test_party_member_count_one() -> None:
     assert party.member_count == 1
 
 
-### ---------- Party Name Tests ---------- ###
-def test_party_name_whitespace_only() -> None:
-    """Tests that the party name contains only whitespaces."""
-    with pytest.raises(ValueError, match="Party name cannot be empty"):
-        Party("12345", "   ")
+def test_available_slots_new_party() -> None:
+    """Tests that a new party has all slots available."""
+    adventurer = Adventurer("adv-001", "Nox", AdventurerClass.WARRIOR, 1)
+    party = Party("12345", "Nox's Party")
+    assert party.available_slots == 4
 
 
-def test_party_name_length_short() -> None:
-    """Tests that a party name shorter than 3 characters is rejected."""
-    with pytest.raises(ValueError, match="Party name must be between 3 and 30 characters"):
-        Party("12345", "No")
+def test_available_slots() -> None:
+    """Tests available slots are accurate."""
+    adventurer = Adventurer("adv-001", "Nox", AdventurerClass.WARRIOR, 1)
+    party = Party("12345", "Nox's Party")
+    party.add_member(adventurer)
+    assert party.available_slots == 3
 
 
-def test_party_name_length_long() -> None:
-    """Tests that a party name longer than 30 characters is rejected."""
-    with pytest.raises(ValueError, match="Party name must be between 3 and 30 characters"):
-        Party("12345", "Nox's Party Name Is Far Too Long")
-
-
-def test_party_name_whitespace_before_after() -> None:
-    """Tests that a party name with leading and trailing whitespaces are removed."""
-    party = Party("12345", "     Nox's Party     ")
-    assert party.name == "Nox's Party"
-
-
-### ---------- Party Name Tests ---------- ###
+### ---------- Party Leader Assignment Tests ---------- ###
 def test_assign_party_leader() -> None:
     """Tests that the party has no leader then updates the leader to the adventurer."""
     adventurer = Adventurer("adv-001", "Nox", AdventurerClass.WARRIOR, 1)
@@ -203,7 +218,8 @@ def test_assign_new_leader_from_existing() -> None:
     assert party.leader is adventurer
 
 
-def test_removing_member_from_party() -> None:
+### ---------- Party Leader Change Tests ---------- ###
+def test_removing_leader_from_party() -> None:
     """Tests that the adventurer is removed from the party and their status is updated to available."""
     adventurer = Adventurer("adv-001", "Nox", AdventurerClass.WARRIOR, 1)
     party = Party("12345", "Nox's Party")
@@ -217,4 +233,58 @@ def test_removing_member_from_party() -> None:
     assert adventurer.status == AdventurerStatus.AVAILABLE
 
 
-# TO DO: Create tests for available slots!
+def test_change_leader_not_in_party() -> None:
+    """Tests that the change leader method fails if adventurer is not in the party."""
+    adventurer = Adventurer("adv-001", "Nox", AdventurerClass.WARRIOR, 1)
+    adventurer2 = Adventurer("adv-002", "Box", AdventurerClass.WARRIOR, 1)
+    party = Party("12345", "Nox's Party")
+    party.add_member(adventurer)
+    party.assign_leader(adventurer)
+    assert party.leader is adventurer
+    
+    with pytest.raises(ValueError, match="Adventurer is not in the party"):
+        party.change_leader(adventurer2)
+    
+    assert party.leader is adventurer
+
+
+def test_change_leader_no_leader() -> None:
+    """Tests that the change leader method fails if no leader is already assigned."""
+    adventurer = Adventurer("adv-001", "Nox", AdventurerClass.WARRIOR, 1)
+    party = Party("12345", "Nox's Party")
+    party.add_member(adventurer)
+    assert adventurer in party.members
+    assert party.leader is None
+    
+    with pytest.raises(ValueError, match="Party has no leader"):
+        party.change_leader(adventurer)
+    
+    assert party.leader is None
+
+
+def test_change_leader_already_leader() -> None:
+    """Tests that the change leader method fails when adventurer is already the leader."""
+    adventurer = Adventurer("adv-001", "Nox", AdventurerClass.WARRIOR, 1)
+    party = Party("12345", "Nox's Party")
+    party.add_member(adventurer)
+    party.assign_leader(adventurer)
+    assert party.leader is adventurer
+    
+    with pytest.raises(ValueError, match="Adventurer is already the party leader"):
+        party.change_leader(adventurer)
+    
+    assert party.leader is adventurer
+
+
+def test_change_leader() -> None:
+    """Tests that the change leader method updates current leader to another party member."""
+    adventurer = Adventurer("adv-001", "Nox", AdventurerClass.WARRIOR, 1)
+    adventurer2 = Adventurer("adv-002", "Box", AdventurerClass.WARRIOR, 1)
+    party = Party("12345", "Nox's Party")
+    party.add_member(adventurer)
+    party.assign_leader(adventurer)
+    assert party.leader is adventurer
+    
+    party.add_member(adventurer2)
+    party.change_leader(adventurer2)
+    assert party.leader is adventurer2

@@ -24,6 +24,23 @@ class Party:
         self.max_members: int = 4
 
 
+    @property
+    def member_count(self) -> int:
+        """Returns the count of party members."""
+        return len(self.members)
+
+
+    @property
+    def available_slots(self) -> int:
+        """Return the number of open member slots."""
+        return self.max_members - self.member_count
+
+
+    def is_full(self) -> bool:
+        """Checks if party is full."""
+        return self.member_count >= self.max_members
+
+
     def add_member(self, adventurer: Adventurer) -> None:
         """Adds a member to the party and updates their status to assigned."""
         if adventurer in self.members:
@@ -51,17 +68,6 @@ class Party:
         adventurer.status = AdventurerStatus.AVAILABLE
 
 
-    @property
-    def member_count(self) -> int:
-        """Returns the count of party members."""
-        return len(self.members)
-
-
-    def is_full(self) -> bool:
-        """Checks if party is full."""
-        return self.member_count >= self.max_members
-
-
     def assign_leader(self, adventurer: Adventurer) -> None:
         """Checks if adventurer exists in the party, then assigns them as leader."""
         if adventurer not in self.members:
@@ -73,7 +79,16 @@ class Party:
         self.leader = adventurer
 
 
-    @property
-    def available_slots(self) -> int:
-        """Return the number of open member slots."""
-        return self.max_members - self.member_count
+    def change_leader(self, adventurer: Adventurer) -> None:
+        """Verifies the party already has a leader, then checks if the adventurer is in the party, 
+        and then updates the leader to that adventurer."""
+        if self.leader is None:
+            raise ValueError("Party has no leader.")
+        
+        if adventurer not in self.members:
+            raise ValueError("Adventurer is not in the party.")
+        
+        if self.leader is adventurer:
+            raise ValueError("Adventurer is already the party leader.")
+        
+        self.leader = adventurer
