@@ -133,3 +133,72 @@ def test_quest_description_length_short() -> None:
             QuestDifficulty.EASY, 
             100,
         )
+
+
+### ---------- Quest Status Tests ---------- ###
+def test_quest_status() -> None:
+    """Verifies that quest status is not started and then updates status to in progress."""
+    quest = Quest(
+                "quest-001", 
+                "New Beginnings", 
+                "This quest will be the start of the tutorial.", 
+                QuestDifficulty.EASY, 
+                100,
+            )
+    assert quest.status is QuestStatus.NOT_STARTED
+    
+    quest.start()
+    assert quest.status is QuestStatus.IN_PROGRESS
+
+
+def test_quest_status_already_started() -> None:
+    """Starts the quest and then attempts to start it again while it is already in progress."""
+    quest = Quest(
+                "quest-001", 
+                "New Beginnings", 
+                "This quest will be the start of the tutorial.", 
+                QuestDifficulty.EASY, 
+                100,
+            )
+    assert quest.status is QuestStatus.NOT_STARTED
+    
+    quest.start()
+    assert quest.status is QuestStatus.IN_PROGRESS
+    
+    with pytest.raises(ValueError, match="Only quests that have not started can be started"):
+        quest.start()
+    
+
+def test_quest_status_complete() -> None:
+    """Tests to update the quest status to complete."""
+    quest = Quest(
+                "quest-001", 
+                "New Beginnings", 
+                "This quest will be the start of the tutorial.", 
+                QuestDifficulty.EASY, 
+                100,
+            )
+    assert quest.status is QuestStatus.NOT_STARTED
+    
+    quest.start()
+    assert quest.status is QuestStatus.IN_PROGRESS
+    
+    quest.complete()
+    assert quest.status is QuestStatus.COMPLETED
+
+
+def test_complete_quest_not_in_progress() -> None:
+    """Tests that a quest cannot be completed before it is started."""
+    quest = Quest(
+                "quest-001", 
+                "New Beginnings", 
+                "This quest will be the start of the tutorial.", 
+                QuestDifficulty.EASY, 
+                100,
+            )
+    assert quest.status is QuestStatus.NOT_STARTED
+    
+    with pytest.raises(ValueError, match="Quests can only be completed if they are currently in progress"):
+        quest.complete()
+    
+    assert quest.status is QuestStatus.NOT_STARTED

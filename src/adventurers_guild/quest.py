@@ -36,3 +36,19 @@ class Quest:
         self.reward_gold = reward_gold
         
         self.status = QuestStatus.NOT_STARTED
+    
+    
+    def start(self) -> None:
+        """Checks if the quest status is 'Not Started' and then update it to 'In progress'."""
+        if self.status is not QuestStatus.NOT_STARTED:
+            raise ValueError("Only quests that have not started can be started.")
+        
+        self.status = QuestStatus.IN_PROGRESS
+    
+    
+    def complete(self) -> None:
+        """Check that the quest is not already completed, is in progress, and updates it to complete."""
+        if self.status is not QuestStatus.IN_PROGRESS:
+            raise ValueError("Quests can only be completed if they are currently in progress.")
+        
+        self.status = QuestStatus.COMPLETED
