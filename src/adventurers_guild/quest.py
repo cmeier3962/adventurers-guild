@@ -52,3 +52,11 @@ class Quest:
             raise ValueError("Quests can only be completed if they are currently in progress.")
         
         self.status = QuestStatus.COMPLETED
+
+
+    def abandon(self) -> None:
+        """Check that the quest is in progress and then updates it to not started."""
+        if self.status is not QuestStatus.IN_PROGRESS:
+            raise ValueError("Only quests in progress can be abandoned.")
+        
+        self.status = QuestStatus.NOT_STARTED

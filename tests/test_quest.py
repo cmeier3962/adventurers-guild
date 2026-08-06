@@ -202,3 +202,36 @@ def test_complete_quest_not_in_progress() -> None:
         quest.complete()
     
     assert quest.status is QuestStatus.NOT_STARTED
+
+
+def test_abaondon_quest() -> None:
+    """Tests to update the quest status to not started when abaondoned."""
+    quest = Quest(
+                "quest-001", 
+                "New Beginnings", 
+                "This quest will be the start of the tutorial.", 
+                QuestDifficulty.EASY, 
+                100,
+            )
+    quest.start()
+    assert quest.status is QuestStatus.IN_PROGRESS
+    
+    quest.abandon()
+    assert quest.status is QuestStatus.NOT_STARTED
+
+
+def test_abandon_quest_not_in_progress() -> None:
+    """Tests that the quest status returns to not started when abandoned."""
+    quest = Quest(
+                "quest-001", 
+                "New Beginnings", 
+                "This quest will be the start of the tutorial.", 
+                QuestDifficulty.EASY, 
+                100,
+            )
+    assert quest.status is QuestStatus.NOT_STARTED
+    
+    with pytest.raises(ValueError, match="Only quests in progress can be abandoned"):
+        quest.abandon()
+    
+    assert quest.status is QuestStatus.NOT_STARTED
