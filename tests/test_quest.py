@@ -6,6 +6,41 @@ from adventurers_guild.party import Party
 from adventurers_guild.quest import Quest
 
 
+### ---------- Fixtures ---------- ###
+@pytest.fixture
+def adventurer() -> Adventurer:
+    """Returns a valid adventurer."""
+    return Adventurer("adv-001", "Nox", AdventurerClass.WARRIOR, 1)
+
+
+@pytest.fixture
+def party(adventurer: Adventurer) -> Party:
+    """Returns a valid party with one member and a leader."""
+    party = Party("12345", "Nox's Party")
+    party.add_member(adventurer)
+    party.assign_leader(adventurer)
+    return party
+
+
+@pytest.fixture
+def quest() -> Quest:
+    """Returns a valid quest."""
+    return Quest(
+                "quest-001", 
+                "New Beginnings", 
+                "This quest will be the start of the tutorial.", 
+                QuestDifficulty.EASY, 
+                100,
+            )
+
+
+@pytest.fixture
+def assigned_quest(party: Party, quest: Quest) -> Quest:
+    """Returns a valid quest with an assigned party."""
+    quest.assign_party(party)
+    return quest
+    
+
 ### ---------- Initialize Class Tests---------- ###
 def test_quest() -> None:
     """Tests the creation of a Quest object."""
@@ -136,7 +171,7 @@ def test_quest_description_length_short() -> None:
 
 
 ### ---------- Quest Status Tests ---------- ###
-def test_quest_status() -> None:
+def test_start_quest(party: Party) -> None:
     """Verifies that quest status is not started and then updates status to in progress."""
     quest = Quest(
                 "quest-001", 
@@ -145,10 +180,31 @@ def test_quest_status() -> None:
                 QuestDifficulty.EASY, 
                 100,
             )
+    quest.assign_party(party)
     assert quest.status is QuestStatus.NOT_STARTED
+    assert quest.assigned_party is party
     
     quest.start()
     assert quest.status is QuestStatus.IN_PROGRESS
+
+
+def test_start_quest_without_party() -> None:
+    """Test that start method fails without a party."""
+    quest = Quest(
+                "quest-001", 
+                "New Beginnings", 
+                "This quest will be the start of the tutorial.", 
+                QuestDifficulty.EASY, 
+                100,
+            )
+    assert quest.assigned_party is None
+    assert quest.status is QuestStatus.NOT_STARTED
+    
+    with pytest.raises(ValueError, match="You must have a party to start this quest"):
+        quest.start()
+    
+    assert quest.assigned_party is None
+    assert quest.status is QuestStatus.NOT_STARTED
 
 
 def test_quest_status_already_started() -> None:

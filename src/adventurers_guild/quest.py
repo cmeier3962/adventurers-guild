@@ -43,6 +43,8 @@ class Quest:
     
     def start(self) -> None:
         """Checks if the quest status is 'Not Started' and then update it to 'In progress'."""
+        if self.assigned_party is None:
+            raise ValueError("You must have a party to start this quest.")
         if self.status is not QuestStatus.NOT_STARTED:
             raise ValueError("Only quests that have not started can be started.")
         
