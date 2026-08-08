@@ -1,15 +1,177 @@
-# Python Project Template
+# Eryndor: The Shattered Veil
 
-A modern starting point for Python projects using:
+Eryndor is a fantasy RPG domain model built in Python, inspired by MMORPG systems such as RuneScape, Final Fantasy XIV, and Guild Wars.
 
-- Python 3.14
-- `uv` for Python and dependency management
-- the `src/` package layout
-- Ruff for linting and formatting
-- Pyright for static type checking
-- Pytest for automated testing
-- pytest-cov for coverage reporting
-- GitHub Actions for continuous integration
+The project currently models adventurers, parties, and quests through a tested object-oriented design.
+
+The long-term goal is to expand Eryndor into a larger game backend simulation containing systems such as inventories, equipment, combat, skills, dungeons, crafting, persistence, and API integration.
+
+## Current features
+
+### Adventurers
+
+Adventurers currently have:
+
+- a unique ID
+- a validated username
+- an adventurer class
+- a level
+- a status
+
+Available adventurer classes:
+
+- Warrior
+- Mage
+- Rogue
+- Cleric
+- Ranger
+
+Available statuses:
+
+- Available
+- Assigned
+- Injured
+- Retired
+
+Supported behaviors include:
+
+- leveling up
+- becoming injured
+- recovering from injury
+- retiring
+- preventing invalid status transitions
+
+Adventurers cannot perform actions that conflict with their current status, such as leveling while retired.
+
+---
+
+### Parties
+
+Parties currently support:
+
+- validated party names
+- a maximum size of four adventurers
+- adding available adventurers
+- preventing duplicate members
+- removing members
+- assigning one party leader
+- changing party leaders
+- automatically clearing the leader when they leave
+- tracking member count
+- reporting available member slots
+- reporting whether the party is full
+
+Adding an adventurer to a party changes their status from `AVAILABLE` to `ASSIGNED`.
+
+Removing an adventurer changes their status back to `AVAILABLE`.
+
+---
+
+### Quests
+
+Quests currently have:
+
+- a unique ID
+- a validated name
+- a validated description
+- a difficulty
+- a gold reward
+- a progress status
+- an assigned party
+
+Available quest difficulties:
+
+- Easy
+- Normal
+- Hard
+- Elite
+- Master
+
+Available quest statuses:
+
+- Not Started
+- In Progress
+- Completed
+
+Supported behaviors include:
+
+- assigning a party to a quest
+- starting a quest
+- completing a quest
+- abandoning an active quest
+- preventing invalid status transitions
+
+New quests begin with a status of `NOT_STARTED`.
+
+Quests must have an assigned party before they can begin.
+
+Starting a quest changes its status to `IN_PROGRESS`.
+
+Only quests currently in progress can be completed.
+
+Completing a quest changes its status to `COMPLETED`.
+
+Abandoning an active quest returns its status to `NOT_STARTED`, allowing it to be accepted again later.
+
+---
+
+## Planned features
+
+Future development may include:
+
+### Character Systems
+
+- adventurer attributes and statistics
+- experience and leveling progression
+- skills and skill requirements
+- character equipment
+- combat abilities
+
+### Guild Systems
+
+- guild management
+- guild reputation
+- guild ranks
+- adventurer recruitment
+- guild contracts and rewards
+
+### Quest Systems
+
+- quest prerequisites
+- quest chains
+- branching quest outcomes
+- NPC quest givers
+- quest rewards beyond gold
+- world event quests
+
+### Inventory and Economy
+
+- items and item categories
+- inventory management
+- equipment management
+- weapons and armor
+- consumables
+- crafting materials
+- shops and trading
+
+### World Systems
+
+- locations
+- dungeons
+- bosses
+- encounters
+- enemies
+- loot tables
+
+### Application Layer
+
+- FastAPI endpoints
+- Pydantic request and response models
+- SQLite persistence
+- SQLAlchemy integration
+- database migrations
+
+---
 
 ## Project structure
 
@@ -21,12 +183,19 @@ A modern starting point for Python projects using:
 ├── scripts/
 │   └── smoke_test.py
 ├── src/
-│   └── adventurers_guild/
+│   └── eryndor/
 │       ├── __init__.py
 │       ├── __main__.py
-│       └── main.py
+│       ├── adventurer.py
+│       ├── enums.py
+│       ├── main.py
+│       ├── party.py
+│       └── quest.py
 ├── tests/
-│   └── test_main.py
+│   ├── test_adventurer.py
+│   ├── test_main.py
+│   ├── test_party.py
+│   └── test_quest.py
 ├── .gitignore
 ├── .python-version
 ├── pyproject.toml
@@ -34,27 +203,13 @@ A modern starting point for Python projects using:
 └── uv.lock
 ```
 
-### What belongs where
-
-- `src/adventurers_guild/`: application or reusable package code
-- `tests/`: automated tests
-- `scripts/`: optional development and maintenance scripts
-- `.github/workflows/`: GitHub Actions workflows
-- `pyproject.toml`: project metadata, dependencies, and tool configuration
-- `uv.lock`: exact resolved dependency versions
-
 ## Requirements
 
-Install:
-
 - Git
+- Python 3.14
 - `uv`
 
-`uv` can also install and manage the Python version required by the project.
-
-### Install uv on Windows
-
-Using WinGet:
+Install `uv` on Windows with WinGet:
 
 ```powershell
 winget install --id astral-sh.uv -e
@@ -66,32 +221,14 @@ Restart the terminal after installation, then verify:
 uv --version
 ```
 
-## Create a project from this template
-
-Create a new repository using this template, then clone it:
-
-```powershell
-git clone <repository-url>
-cd <repository-name>
-```
-
-Rename the package directory:
-
-```powershell
-Rename-Item src\adventurers_guild src\my_project
-```
-
-Use lowercase letters and underscores for the Python package directory.
-
-Update the following values:
-
-1. Change `name` in `pyproject.toml`.
-2. Change the Hatch package path in `pyproject.toml`.
-3. Change the coverage package name in `pyproject.toml`.
-4. Replace imports containing `adventurers_guild`.
-5. Update the project title and description in this README.
-
 ## Set up the project
+
+Clone the repository:
+
+```powershell
+git clone https://github.com/cmeier3962/eryndor.git
+cd eryndor
+```
 
 Synchronize the environment:
 
@@ -99,22 +236,16 @@ Synchronize the environment:
 uv sync
 ```
 
-This command:
-
-- reads `pyproject.toml`
-- installs the required Python version when necessary
-- creates `.venv`
-- installs the project and development dependencies
-- updates `uv.lock`
+This command creates the project virtual environment and installs the project and its development dependencies.
 
 You do not normally need to activate `.venv` manually.
 
-## Run the application
+## Run the project
 
 Run the package:
 
 ```powershell
-uv run python -m adventurers_guild
+uv run python -m eryndor
 ```
 
 Run the smoke-test script:
@@ -123,7 +254,9 @@ Run the smoke-test script:
 uv run python scripts\smoke_test.py
 ```
 
-## Run automated tests
+## Run tests
+
+Run the complete test suite:
 
 ```powershell
 uv run pytest
@@ -131,9 +264,15 @@ uv run pytest
 
 The project requires at least 80% test coverage.
 
-## Run code-quality checks
+Run one test file without enforcing project-wide coverage:
 
-Lint the project:
+```powershell
+uv run pytest tests\test_party.py --no-cov
+```
+
+## Code-quality checks
+
+Run Ruff linting:
 
 ```powershell
 uv run ruff check .
@@ -145,102 +284,65 @@ Automatically repair safe lint violations:
 uv run ruff check . --fix
 ```
 
-Format the project:
-
-```powershell
-uv run ruff format .
-```
-
-Check formatting without modifying files:
-
-```powershell
-uv run ruff format --check .
-```
-
 Run static type checking:
 
 ```powershell
 uv run pyright
 ```
 
-## Recommended local validation
-
-Before committing changes, run:
+Run the complete local validation:
 
 ```powershell
 uv run ruff check .
-uv run ruff format --check .
 uv run pyright
 uv run pytest
 ```
 
-These are also run automatically by GitHub Actions.
+## Development workflow
 
-## Dependency management
+Development is completed on feature branches and merged into `main` through pull requests.
 
-Add a runtime dependency:
-
-```powershell
-uv add requests
-```
-
-Add a development dependency:
+Example:
 
 ```powershell
-uv add --dev pytest
+git switch -c feature/example-feature
+git push -u origin feature/example-feature
 ```
 
-Remove a dependency:
+Before committing:
 
 ```powershell
-uv remove requests
+uv run ruff check .
+uv run pyright
+uv run pytest
 ```
 
-Update compatible dependency versions:
+Then commit and push:
 
 ```powershell
-uv lock --upgrade
-uv sync
+git add -A
+git commit -m "Describe the completed change"
+git push
 ```
 
-Inspect the dependency tree:
+GitHub Actions runs the configured quality checks for pull requests targeting `main`.
 
-```powershell
-uv tree
-```
+## Learning goals
 
-Avoid editing `uv.lock` manually.
+This project is being used to practice:
 
-## uv compared with traditional pip
-
-A traditional Python workflow often requires several separate steps:
-
-```powershell
-python -m venv .venv
-.\.venv\Scripts\Activate.ps1
-python -m pip install -r requirements.txt
-python script.py
-```
-
-With `uv`, the equivalent workflow is usually:
-
-```powershell
-uv sync
-uv run python script.py
-```
-
-`uv` manages the virtual environment, Python version, dependencies, and lockfile as one project workflow.
-
-## Continuous integration
-
-The GitHub Actions workflow runs on pushes and pull requests targeting `main`.
-
-It verifies:
-
-- dependencies match `uv.lock`
-- Ruff linting passes
-- Ruff formatting passes
-- Pyright type checking passes
-- Pytest and coverage requirements pass
-
-A pull request should not be merged until these checks succeed.
+- object-oriented design
+- composition between classes
+- domain modeling
+- enums and state transitions
+- type annotations
+- validation and exception handling
+- pytest unit testing
+- reusable pytest fixtures
+- test coverage
+- dependency management with uv
+- linting with Ruff
+- static type checking with Pyright
+- Git and GitHub workflows
+- API development with FastAPI
+- software architecture and system design
