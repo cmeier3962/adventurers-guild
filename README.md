@@ -1,14 +1,12 @@
 # Eryndor: The Shattered Veil
 
-Eryndor is a fantasy RPG domain model built in Python, inspired by MMORPG systems such as RuneScape, Final Fantasy XIV, and Guild Wars.
+The project currently models adventurers, parties, quests, and items through a tested Python domain model.
 
-The project currently models adventurers, parties, and quests through a tested object-oriented design.
-
-The long-term goal is to expand Eryndor into a larger game backend simulation containing systems such as inventories, equipment, combat, skills, dungeons, crafting, persistence, and API integration.
+The long-term goal is to expand it into a complete fantasy RPG system with inventories, equipment, skills, combat, persistence, APIs, and potentially a game client.
 
 ## Current features
 
-### Adventurers
+## Adventurers
 
 Adventurers currently have:
 
@@ -41,11 +39,9 @@ Supported behaviors include:
 - retiring
 - preventing invalid status transitions
 
-Adventurers cannot perform actions that conflict with their current status, such as leveling while retired.
-
 ---
 
-### Parties
+## Parties
 
 Parties currently support:
 
@@ -55,7 +51,7 @@ Parties currently support:
 - preventing duplicate members
 - removing members
 - assigning one party leader
-- changing party leaders
+- replacing an existing party leader
 - automatically clearing the leader when they leave
 - tracking member count
 - reporting available member slots
@@ -67,7 +63,7 @@ Removing an adventurer changes their status back to `AVAILABLE`.
 
 ---
 
-### Quests
+## Quests
 
 Quests currently have:
 
@@ -95,7 +91,7 @@ Available quest statuses:
 
 Supported behaviors include:
 
-- assigning a party to a quest
+- assigning parties to quests
 - starting a quest
 - completing a quest
 - abandoning an active quest
@@ -103,77 +99,125 @@ Supported behaviors include:
 
 New quests begin with a status of `NOT_STARTED`.
 
-Quests must have an assigned party before they can begin.
+Parties can be assigned to quests before the quest begins.
 
 Starting a quest changes its status to `IN_PROGRESS`.
 
-Only quests currently in progress can be completed.
-
-Completing a quest changes its status to `COMPLETED`.
+Only quests currently in progress can be completed. Completing a quest changes its status to `COMPLETED`.
 
 Abandoning an active quest returns its status to `NOT_STARTED`, allowing it to be accepted again later.
 
 ---
 
-## Planned features
+## Items
+
+Items currently have:
+
+- a unique ID
+- a validated name
+- a validated description
+- an item category
+- a rarity
+- a value
+
+Available item types:
+
+- Weapon
+- Armor
+- Consumable
+- Material
+- Quest
+- Currency
+
+Available item rarities:
+
+- Common
+- Uncommon
+- Rare
+- Exotic
+- Ascended
+- Legendary
+
+Supported behaviors include:
+
+- validating item names
+- validating item descriptions
+- preventing negative item values
+- supporting zero-value items
+
+Items currently represent the foundation for future systems including:
+
+- inventory management
+- equipment
+- item bonuses
+- durability
+- crafting
+- loot drops
+- rewards
+
+---
+
+# Planned features
 
 Future development may include:
 
-### Character Systems
+## Character progression
 
-- adventurer attributes and statistics
-- experience and leveling progression
-- skills and skill requirements
-- character equipment
-- combat abilities
+- skills
+- experience
+- attributes
+- level requirements
+- class progression
+- specializations
 
-### Guild Systems
+## Inventory and equipment
 
-- guild management
-- guild reputation
-- guild ranks
-- adventurer recruitment
-- guild contracts and rewards
-
-### Quest Systems
-
-- quest prerequisites
-- quest chains
-- branching quest outcomes
-- NPC quest givers
-- quest rewards beyond gold
-- world event quests
-
-### Inventory and Economy
-
-- items and item categories
 - inventory management
-- equipment management
+- item stacking
+- equipment slots
 - weapons and armor
-- consumables
-- crafting materials
-- shops and trading
+- item stats
+- bonuses and effects
+- durability
+- set bonuses
 
-### World Systems
+## Quest systems
 
-- locations
-- dungeons
+- quest chains
+- quest prerequisites
+- skill requirements
+- quest rewards beyond gold
+- NPC quest givers
+
+## Gameplay systems
+
+- enemies and monsters
+- combat system
 - bosses
-- encounters
-- enemies
+- dungeons
 - loot tables
+- crafting
+- gathering
 
-### Application Layer
+## Backend systems
 
+- guild-wide adventurer, party, and quest management
 - FastAPI endpoints
 - Pydantic request and response models
 - SQLite persistence
 - SQLAlchemy integration
-- database migrations
+
+## Client development
+
+- user interface
+- player input
+- world exploration
+- tile-based movement
+- game client/server architecture
 
 ---
 
-## Project structure
+# Project structure
 
 ```text
 .
@@ -188,12 +232,12 @@ Future development may include:
 │       ├── __main__.py
 │       ├── adventurer.py
 │       ├── enums.py
-│       ├── main.py
+│       ├── item.py
 │       ├── party.py
 │       └── quest.py
 ├── tests/
 │   ├── test_adventurer.py
-│   ├── test_main.py
+│   ├── test_item.py
 │   ├── test_party.py
 │   └── test_quest.py
 ├── .gitignore

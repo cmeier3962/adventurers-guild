@@ -38,7 +38,7 @@ def party_with_member_no_leader(adventurer: Adventurer) -> Party:
 ### ---------- Initialize Class Tests ---------- ###
 def test_empty_party(empty_party: Party) -> None:
     """Tests a predefined party."""
-    assert empty_party.party_id == "12345"
+    assert empty_party.id == "12345"
     assert empty_party.name == "Nox's Party"
     assert empty_party.leader is None
     assert empty_party.members == []

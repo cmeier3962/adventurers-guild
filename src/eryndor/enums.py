@@ -32,3 +32,23 @@ class QuestStatus(StrEnum):
     NOT_STARTED = "Not Started"
     IN_PROGRESS = "In Progress"
     COMPLETED = "Completed"
+
+
+class ItemType(StrEnum):
+    """Available item categories."""
+    WEAPON = "Weapon"
+    ARMOR = "Armor"
+    CONSUMABLE = "Consumable"
+    MATERIAL = "Material"
+    QUEST = "Quest"
+    CURRENCY = "Currency"
+
+
+class ItemRarity(StrEnum):
+    """Available rarities for item drops."""
+    COMMON = "Common"
+    UNCOMMON = "Uncommon"
+    RARE = "Rare"
+    EXOTIC = "Exotic"
+    ASCENDED = "Ascended"
+    LEGENDARY = "Legendary"

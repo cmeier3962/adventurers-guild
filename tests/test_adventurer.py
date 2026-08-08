@@ -14,7 +14,7 @@ def adventurer() -> Adventurer:
 ### ---------- Initialize Class Tests ---------- ###
 def test_adventurer(adventurer: Adventurer) -> None:
     """Tests a pre-defined adventurer."""
-    assert adventurer.adventurer_id == "adv-001"
+    assert adventurer.id == "adv-001"
     assert adventurer.username == "Nox"
     assert adventurer.adventurer_class is AdventurerClass.WARRIOR
     assert adventurer.level == 1
