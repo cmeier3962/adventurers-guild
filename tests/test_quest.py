@@ -51,7 +51,7 @@ def in_progress_quest(assigned_quest: Quest) -> Quest:
 ### ---------- Initialize Class Tests ---------- ###
 def test_quest(quest: Quest) -> None:
     """Tests the creation of a Quest object."""
-    assert quest.quest_id == "quest-001"
+    assert quest.id == "quest-001"
     assert quest.name == "New Beginnings"
     assert quest.description == "This quest will be the start of the tutorial."
     assert quest.difficulty is QuestDifficulty.EASY
@@ -59,6 +59,7 @@ def test_quest(quest: Quest) -> None:
     assert quest.status is QuestStatus.NOT_STARTED
 
 
+### ---------- Quest Gold Tests ---------- ###
 def test_quest_zero_gold(quest: Quest) -> None:
     """Tests the creation of a Quest object with zero gold reward."""
     quest.reward_gold = 0
@@ -91,12 +92,12 @@ def test_quest_name_whitespace_only() -> None:
         )
 
 
-def test_quest_name_whitespace_before_after(quest: Quest) -> None:
+def test_quest_name_whitespace_before_after() -> None:
     """Tests that leading and trailing quest name whitespaces are removed."""
     quest = Quest(
         "quest-001",
         "   New Beginnings   ",
-        quest.description,
+        "This quest will be the start of the tutorial.",
         QuestDifficulty.EASY,
         100,
     )

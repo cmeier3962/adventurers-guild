@@ -10,7 +10,7 @@ class Party:
         party_id: str,
         name: str,
     ) -> None:
-        self.party_id = party_id
+        self.id = party_id
         
         party_name = name.strip()
         if party_name == "":

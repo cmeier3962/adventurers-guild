@@ -13,7 +13,7 @@ class Quest:
         difficulty: QuestDifficulty,
         reward_gold: int,
     ) -> None:
-        self.quest_id = quest_id
+        self.id = quest_id
         
         quest_name = name.strip()
         if quest_name == "":
