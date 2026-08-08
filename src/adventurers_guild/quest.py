@@ -74,13 +74,13 @@ class Quest:
             - Party has a leader
             - Quest does not already have a party assigned
         """
-        if self.assigned_party is not None:
-            raise ValueError("Quest already has an assigned party.")
         if self.status is not QuestStatus.NOT_STARTED:
             raise ValueError("Parties can only be assigned to quests that have not started.")
         if party.member_count == 0:
             raise ValueError("Party must have at least one member.")
         if party.leader is None:
             raise ValueError("Party must have a leader.")
+        if self.assigned_party is not None:
+            raise ValueError("Quest already has an assigned party.")
         
         self.assigned_party = party
