@@ -1,6 +1,6 @@
-"""Allow the package to run with `python -m adventurers_guild`."""
+"""Allow the package to run with `python -m eryndor`."""
 
-from adventurers_guild import greet
+from eryndor import greet
 
 
 def main() -> None:

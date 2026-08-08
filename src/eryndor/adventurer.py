@@ -1,4 +1,4 @@
-from adventurers_guild.enums import AdventurerClass, AdventurerStatus
+from eryndor.enums import AdventurerClass, AdventurerStatus
 
 
 class Adventurer:

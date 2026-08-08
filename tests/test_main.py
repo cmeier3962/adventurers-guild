@@ -2,8 +2,8 @@
 
 import pytest
 
-from adventurers_guild import greet
-from adventurers_guild.__main__ import main
+from eryndor import greet
+from eryndor.__main__ import main
 
 
 def test_greet_with_name() -> None:

@@ -1,6 +1,5 @@
-from adventurers_guild.adventurer import Adventurer
-from adventurers_guild.enums import AdventurerClass, AdventurerStatus, QuestDifficulty, QuestStatus
-from adventurers_guild.party import Party
+from eryndor.enums import QuestDifficulty, QuestStatus
+from eryndor.party import Party
 
 
 class Quest:

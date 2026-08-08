@@ -3,7 +3,7 @@ requires = ["hatchling"]
 build-backend = "hatchling.build"
 
 [project]
-name = "adventurers-guild"
+name = "eryndor"
 version = "0.1.0"
 description = "A fantasy adventurer, party, inventory, and quest management system."
 readme = "README.md"
@@ -22,7 +22,7 @@ dev = [
 ]
 
 [tool.hatch.build.targets.wheel]
-packages = ["src/adventurers_guild"]
+packages = ["src/eryndor"]
 
 [tool.ruff]
 target-version = "py314"
@@ -57,14 +57,14 @@ testpaths = ["tests"]
 addopts = [
     "--strict-markers",
     "--strict-config",
-    "--cov=adventurers_guild",
+    "--cov=eryndor",
     "--cov-report=term-missing",
     "--cov-fail-under=80",
 ]
 
 [tool.coverage.run]
 branch = true
-source = ["adventurers_guild"]
+source = ["eryndor"]
 
 [tool.coverage.report]
 show_missing = true

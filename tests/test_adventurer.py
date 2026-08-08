@@ -1,7 +1,7 @@
 import pytest
 
-from adventurers_guild.adventurer import Adventurer
-from adventurers_guild.enums import AdventurerClass, AdventurerStatus
+from eryndor.adventurer import Adventurer
+from eryndor.enums import AdventurerClass, AdventurerStatus
 
 
 ### ---------- Fixtures ---------- ###

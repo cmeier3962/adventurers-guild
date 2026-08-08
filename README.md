@@ -1,8 +1,10 @@
-# Adventurer's Guild
+# Eryndor: The Shattered Veil
 
-The project currently models adventurers, parties, and quests through a tested Python domain model. 
+Eryndor is a fantasy RPG domain model built in Python, inspired by MMORPG systems such as RuneScape, Final Fantasy XIV, and Guild Wars.
 
-The long-term goal is to expand it with inventories, equipment, skills, quest chains, persistence, and a FastAPI application.
+The project currently models adventurers, parties, and quests through a tested object-oriented design.
+
+The long-term goal is to expand Eryndor into a larger game backend simulation containing systems such as inventories, equipment, combat, skills, dungeons, crafting, persistence, and API integration.
 
 ## Current features
 
@@ -39,6 +41,10 @@ Supported behaviors include:
 - retiring
 - preventing invalid status transitions
 
+Adventurers cannot perform actions that conflict with their current status, such as leveling while retired.
+
+---
+
 ### Parties
 
 Parties currently support:
@@ -49,7 +55,7 @@ Parties currently support:
 - preventing duplicate members
 - removing members
 - assigning one party leader
-- replacing an existing party leader
+- changing party leaders
 - automatically clearing the leader when they leave
 - tracking member count
 - reporting available member slots
@@ -58,6 +64,8 @@ Parties currently support:
 Adding an adventurer to a party changes their status from `AVAILABLE` to `ASSIGNED`.
 
 Removing an adventurer changes their status back to `AVAILABLE`.
+
+---
 
 ### Quests
 
@@ -69,6 +77,7 @@ Quests currently have:
 - a difficulty
 - a gold reward
 - a progress status
+- an assigned party
 
 Available quest difficulties:
 
@@ -86,6 +95,7 @@ Available quest statuses:
 
 Supported behaviors include:
 
+- assigning a party to a quest
 - starting a quest
 - completing a quest
 - abandoning an active quest
@@ -93,28 +103,75 @@ Supported behaviors include:
 
 New quests begin with a status of `NOT_STARTED`.
 
+Quests must have an assigned party before they can begin.
+
 Starting a quest changes its status to `IN_PROGRESS`.
 
-Only quests currently in progress can be completed. Completing a quest changes its status to `COMPLETED`.
+Only quests currently in progress can be completed.
+
+Completing a quest changes its status to `COMPLETED`.
 
 Abandoning an active quest returns its status to `NOT_STARTED`, allowing it to be accepted again later.
+
+---
 
 ## Planned features
 
 Future development may include:
 
-- assigning parties to quests
-- quest prerequisites and quest chains
-- adventurer-level requirements for quests
-- skill requirements for quests
-- inventory and equipment management
-- items and item categories
+### Character Systems
+
+- adventurer attributes and statistics
+- experience and leveling progression
+- skills and skill requirements
+- character equipment
+- combat abilities
+
+### Guild Systems
+
+- guild management
+- guild reputation
+- guild ranks
+- adventurer recruitment
+- guild contracts and rewards
+
+### Quest Systems
+
+- quest prerequisites
+- quest chains
+- branching quest outcomes
+- NPC quest givers
 - quest rewards beyond gold
-- guild-wide adventurer, party, and quest management
+- world event quests
+
+### Inventory and Economy
+
+- items and item categories
+- inventory management
+- equipment management
+- weapons and armor
+- consumables
+- crafting materials
+- shops and trading
+
+### World Systems
+
+- locations
+- dungeons
+- bosses
+- encounters
+- enemies
+- loot tables
+
+### Application Layer
+
 - FastAPI endpoints
 - Pydantic request and response models
 - SQLite persistence
 - SQLAlchemy integration
+- database migrations
+
+---
 
 ## Project structure
 
@@ -126,7 +183,7 @@ Future development may include:
 ├── scripts/
 │   └── smoke_test.py
 ├── src/
-│   └── adventurers_guild/
+│   └── eryndor/
 │       ├── __init__.py
 │       ├── __main__.py
 │       ├── adventurer.py
@@ -169,8 +226,8 @@ uv --version
 Clone the repository:
 
 ```powershell
-git clone https://github.com/cmeier3962/adventurers-guild.git
-cd adventurers-guild
+git clone https://github.com/cmeier3962/eryndor.git
+cd eryndor
 ```
 
 Synchronize the environment:
@@ -188,7 +245,7 @@ You do not normally need to activate `.venv` manually.
 Run the package:
 
 ```powershell
-uv run python -m adventurers_guild
+uv run python -m eryndor
 ```
 
 Run the smoke-test script:
@@ -276,13 +333,16 @@ This project is being used to practice:
 
 - object-oriented design
 - composition between classes
+- domain modeling
 - enums and state transitions
 - type annotations
 - validation and exception handling
 - pytest unit testing
+- reusable pytest fixtures
 - test coverage
-- dependency management with `uv`
+- dependency management with uv
 - linting with Ruff
 - static type checking with Pyright
 - Git and GitHub workflows
 - API development with FastAPI
+- software architecture and system design
