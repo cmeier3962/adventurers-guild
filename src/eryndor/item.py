@@ -2,7 +2,7 @@ from eryndor.enums import ItemType, ItemRarity
 
 
 class Item:
-    """Creates an item object."""
+    """Represents an item that can be owned, equipped, consumed, or used."""
     
     def __init__(
         self,
