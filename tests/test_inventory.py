@@ -5,20 +5,6 @@ from eryndor.item import Item
 from eryndor.inventory import Inventory
 
 
-### ---------- Fixtures ---------- ###
-@pytest.fixture
-def item() -> Item:
-    """Returns a valid item."""
-    return Item(
-        "item-001",
-        "Novice Sword",
-        "A basic sword.",
-        ItemType.WEAPON,
-        ItemRarity.COMMON,
-        10,
-    )
-
-
 ### ---------- Initialization Tests ---------- ###
 def test_inventory_initialization_with_default_capacity() -> None:
     """Tests the creation of a valid inventory object."""

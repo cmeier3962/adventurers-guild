@@ -1,28 +1,7 @@
 import pytest
 
-from eryndor.enums import ItemType, ItemRarity
 from eryndor.item import Item
 from eryndor.reward import Reward
-
-
-### ---------- Fixtures ---------- ###
-@pytest.fixture
-def item() -> Item:
-    """Returns a valid item."""
-    return Item(
-        "item-001",
-        "Novice Sword",
-        "A basic sword.",
-        ItemType.WEAPON,
-        ItemRarity.COMMON,
-        10,
-    )
-
-
-@pytest.fixture
-def reward(item: Item) -> Reward:
-    """Returns a valid reward"""
-    return Reward(100, [item])
 
 
 ### ---------- Initialization Tests ---------- ###
@@ -47,10 +26,10 @@ def test_reward_initialization_custom_items_only(item: Item) -> None:
     assert item in reward.items
 
 
-def test_reward_initialization_custom_exp_and_items(item: Item, reward: Reward) -> None:
+def test_reward_initialization_custom_exp_and_items(item: Item, reward_with_item: Reward) -> None:
     """Tests the creation of a custom reward object."""
-    assert reward.experience == 100
-    assert item in reward.items
+    assert reward_with_item.experience == 100
+    assert item in reward_with_item.items
 
 
 def test_reward_initialization_negative_experience() -> None:

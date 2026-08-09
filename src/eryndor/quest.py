@@ -1,5 +1,6 @@
 from eryndor.enums import QuestDifficulty, QuestStatus
 from eryndor.party import Party
+from eryndor.reward import Reward
 
 
 class Quest:
@@ -11,7 +12,7 @@ class Quest:
         name: str,
         description: str,
         difficulty: QuestDifficulty,
-        reward_gold: int,
+        reward: Reward | None = None,
     ) -> None:
         self.id = quest_id
         
@@ -31,9 +32,10 @@ class Quest:
         
         self.difficulty = difficulty
         
-        if reward_gold < 0:
-            raise ValueError("Gold reward must be zero or higher.")
-        self.reward_gold = reward_gold
+        if reward is None:
+            self.reward = Reward()
+        else:
+            self.reward = reward
         
         self.status = QuestStatus.NOT_STARTED
         

@@ -4,20 +4,6 @@ from eryndor.enums import ItemType, ItemRarity
 from eryndor.item import Item
 
 
-### ---------- Fixtures ---------- ###
-@pytest.fixture
-def item() -> Item:
-    """Returns a valid item."""
-    return Item(
-        "item-001",
-        "Novice Sword",
-        "A basic sword.",
-        ItemType.WEAPON,
-        ItemRarity.COMMON,
-        10,
-    )
-
-
 ### ---------- Initialize Class Tests ---------- ###
 def test_item(item: Item) -> None:
     """Tests the creation of a valid item object."""
