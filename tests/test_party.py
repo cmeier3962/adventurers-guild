@@ -231,7 +231,7 @@ def test_assign_new_leader_from_existing(
 ) -> None:
     """Tests that a party cannot assign a second leader."""
     adventurer = Adventurer("adv-002", "Box", AdventurerClass.WARRIOR, 1)
-    
+
     party.add_member(adventurer)
 
     with pytest.raises(

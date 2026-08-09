@@ -3,7 +3,7 @@ from eryndor.item import Item
 
 class Reward:
     """Stores rewards granted from game activities."""
-    
+
     def __init__(
         self,
         experience: int = 0,
@@ -12,7 +12,7 @@ class Reward:
         if experience < 0:
             raise ValueError("Experience reward must be >= 0.")
         self.experience = experience
-        
+
         if items is None:
             self.items = []
         else:

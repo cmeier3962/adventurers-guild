@@ -1,8 +1,8 @@
 import pytest
 
-from eryndor.enums import ItemType, ItemRarity
-from eryndor.item import Item
+from eryndor.enums import ItemRarity, ItemType
 from eryndor.inventory import Inventory
+from eryndor.item import Item
 
 
 ### ---------- Initialization Tests ---------- ###
@@ -42,7 +42,7 @@ def test_add_item_success(item: Item) -> None:
     """Validations item is added to inventory."""
     inventory = Inventory()
     assert inventory.add_item(item)
-    
+
     assert inventory.item_count == 1
     assert item in inventory.items
 
@@ -53,9 +53,9 @@ def test_add_item_failed_inventory_full(item: Item) -> None:
     inventory.add_item(item)
     assert inventory.item_count == 1
     assert inventory.available_slots == 0
-    
+
     assert not inventory.add_item(item)
-    
+
     assert inventory.item_count == 1
 
 
@@ -65,9 +65,9 @@ def test_remove_item_success(item: Item) -> None:
     inventory = Inventory()
     inventory.add_item(item)
     assert item in inventory.items
-    
+
     assert inventory.remove_item(item)
-    
+
     assert item not in inventory.items
 
 
@@ -76,9 +76,9 @@ def test_remove_item_failure_when_item_not_found(item: Item) -> None:
     inventory = Inventory()
     assert inventory.item_count == 0
     assert item not in inventory.items
-    
+
     assert not inventory.remove_item(item)
-    
+
     assert inventory.item_count == 0
 
 
@@ -88,7 +88,7 @@ def test_remove_item_failure_when_item_not_found_in_non_empty_inventory(item: It
     inventory.add_item(item)
     assert inventory.item_count == 1
     assert item in inventory.items
-    
+
     item2 = Item(
         "item-002",
         "Beginner Sword",
@@ -98,8 +98,8 @@ def test_remove_item_failure_when_item_not_found_in_non_empty_inventory(item: It
         20,
     )
     assert item2 not in inventory.items
-    
+
     assert not inventory.remove_item(item2)
-    
+
     assert inventory.item_count == 1
     assert item in inventory.items

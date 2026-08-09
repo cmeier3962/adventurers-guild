@@ -1,6 +1,6 @@
 from eryndor.enums import AdventurerClass, AdventurerStatus
-from eryndor.item import Item
 from eryndor.inventory import Inventory
+from eryndor.item import Item
 
 
 class Adventurer:
@@ -30,12 +30,11 @@ class Adventurer:
         self.level = level
 
         self.status = AdventurerStatus.AVAILABLE
-        
+
         if inventory is None:
             self.inventory = Inventory()
         else:
             self.inventory = inventory
-
 
     def level_up(self) -> None:
         """Increases adventurer's level by 1."""
@@ -43,7 +42,6 @@ class Adventurer:
             raise ValueError("Retired adventurers cannot level up.")
 
         self.level += 1
-
 
     def injured(self) -> None:
         """Updates the adventurer's status to injured."""
@@ -55,13 +53,11 @@ class Adventurer:
 
         self.status = AdventurerStatus.INJURED
 
-
     def recover(self) -> None:
         """Updates adventurer's status to available."""
         if self.status != AdventurerStatus.INJURED:
             raise ValueError("Only injured adventurers can recover.")
         self.status = AdventurerStatus.AVAILABLE
-
 
     def retire(self) -> None:
         """Updates adventurer's status to retired."""
@@ -70,7 +66,6 @@ class Adventurer:
 
         self.status = AdventurerStatus.RETIRED
 
-    
     def receive_item(self, item: Item) -> bool:
         """Attempts to receive an item and store it in adventurers inventory."""
         return self.inventory.add_item(item)

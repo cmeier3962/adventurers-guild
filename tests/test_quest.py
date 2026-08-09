@@ -44,7 +44,7 @@ def test_quest(quest: Quest, item: Item) -> None:
     assert quest.difficulty is QuestDifficulty.EASY
     assert isinstance(quest.reward, Reward)
     assert quest.reward.experience == 100
-    assert item in quest.reward.items 
+    assert item in quest.reward.items
     assert quest.status is QuestStatus.NOT_STARTED
 
 

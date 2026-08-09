@@ -3,6 +3,7 @@ from enum import StrEnum
 
 class AdventurerClass(StrEnum):
     """Available adventurer classes."""
+
     WARRIOR = "Warrior"
     MAGE = "Mage"
     ROGUE = "Rogue"
@@ -12,6 +13,7 @@ class AdventurerClass(StrEnum):
 
 class AdventurerStatus(StrEnum):
     """Available statuses for adventurers."""
+
     AVAILABLE = "Available"
     ASSIGNED = "Assigned"
     INJURED = "Injured"
@@ -20,6 +22,7 @@ class AdventurerStatus(StrEnum):
 
 class QuestDifficulty(StrEnum):
     """Available difficulties for quests."""
+
     EASY = "Easy"
     NORMAL = "Normal"
     HARD = "Hard"
@@ -29,6 +32,7 @@ class QuestDifficulty(StrEnum):
 
 class QuestStatus(StrEnum):
     """Available statuses for quest progress."""
+
     NOT_STARTED = "Not Started"
     IN_PROGRESS = "In Progress"
     COMPLETED = "Completed"
@@ -36,6 +40,7 @@ class QuestStatus(StrEnum):
 
 class ItemType(StrEnum):
     """Available item categories."""
+
     WEAPON = "Weapon"
     ARMOR = "Armor"
     CONSUMABLE = "Consumable"
@@ -46,6 +51,7 @@ class ItemType(StrEnum):
 
 class ItemRarity(StrEnum):
     """Available rarities for item drops."""
+
     COMMON = "Common"
     UNCOMMON = "Uncommon"
     RARE = "Rare"
