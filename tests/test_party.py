@@ -5,36 +5,6 @@ from eryndor.enums import AdventurerClass, AdventurerStatus
 from eryndor.party import Party
 
 
-### ---------- Fixtures ---------- ###
-@pytest.fixture
-def adventurer() -> Adventurer:
-    """Returns a valid adventurer."""
-    return Adventurer("adv-001", "Nox", AdventurerClass.WARRIOR, 1)
-
-
-@pytest.fixture
-def empty_party() -> Party:
-    """Returns an empty party with no members or leader."""
-    return Party("12345", "Nox's Party")
-
-
-@pytest.fixture
-def party(adventurer: Adventurer) -> Party:
-    """Returns a valid party with one member and a leader."""
-    party = Party("12345", "Nox's Party")
-    party.add_member(adventurer)
-    party.assign_leader(adventurer)
-    return party
-
-
-@pytest.fixture
-def party_with_member_no_leader(adventurer: Adventurer) -> Party:
-    """Returns a party with a member but no leader."""
-    party = Party("12345", "Nox's Party")
-    party.add_member(adventurer)
-    return party
-
-
 ### ---------- Initialize Class Tests ---------- ###
 def test_empty_party(empty_party: Party) -> None:
     """Tests a predefined party."""
@@ -261,7 +231,7 @@ def test_assign_new_leader_from_existing(
 ) -> None:
     """Tests that a party cannot assign a second leader."""
     adventurer = Adventurer("adv-002", "Box", AdventurerClass.WARRIOR, 1)
-    
+
     party.add_member(adventurer)
 
     with pytest.raises(
@@ -304,7 +274,7 @@ def test_change_leader_not_in_party(
 
 
 def test_change_leader_no_leader(
-    party_with_member_no_leader: Party,
+    party_without_leader: Party,
     adventurer: Adventurer,
 ) -> None:
     """Tests changing leader fails if no leader exists."""
@@ -312,9 +282,9 @@ def test_change_leader_no_leader(
         ValueError,
         match="Party has no leader",
     ):
-        party_with_member_no_leader.change_leader(adventurer)
+        party_without_leader.change_leader(adventurer)
 
-    assert party_with_member_no_leader.leader is None
+    assert party_without_leader.leader is None
 
 
 def test_change_leader_already_leader(

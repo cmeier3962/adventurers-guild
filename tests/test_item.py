@@ -1,21 +1,7 @@
 import pytest
 
-from eryndor.enums import ItemType, ItemRarity
+from eryndor.enums import ItemRarity, ItemType
 from eryndor.item import Item
-
-
-### ---------- Fixtures ---------- ###
-@pytest.fixture
-def item() -> Item:
-    """Returns a valid item."""
-    return Item(
-        "item-001",
-        "Novice Sword",
-        "A basic sword.",
-        ItemType.WEAPON,
-        ItemRarity.COMMON,
-        10,
-    )
 
 
 ### ---------- Initialize Class Tests ---------- ###
@@ -46,14 +32,14 @@ def test_item_name_whitespace_only() -> None:
 def test_item_name_whitespace_before_and_after() -> None:
     """Tests that an item's name with whitespaces before and after are removed."""
     item = Item(
-            "item-001",
-            "     Novice Sword     ",
-            "A basic sword.",
-            ItemType.WEAPON,
-            ItemRarity.COMMON,
-            10,
-        )
-    
+        "item-001",
+        "     Novice Sword     ",
+        "A basic sword.",
+        ItemType.WEAPON,
+        ItemRarity.COMMON,
+        10,
+    )
+
     assert item.name == "Novice Sword"
 
 
@@ -100,14 +86,14 @@ def test_item_description_whitespace_only() -> None:
 def test_item_description_whitespace_before_and_after() -> None:
     """Tests that an item's description with whitespaces before and after are removed."""
     item = Item(
-            "item-001",
-            "Novice Sword",
-            "     A basic sword.     ",
-            ItemType.WEAPON,
-            ItemRarity.COMMON,
-            10,
-        )
-    
+        "item-001",
+        "Novice Sword",
+        "     A basic sword.     ",
+        ItemType.WEAPON,
+        ItemRarity.COMMON,
+        10,
+    )
+
     assert item.description == "A basic sword."
 
 
@@ -128,14 +114,14 @@ def test_item_description_length_short() -> None:
 def test_item_value_zero() -> None:
     """Tests that an item's value can be zero."""
     item = Item(
-            "item-001",
-            "Novice Sword",
-            "A basic sword.",
-            ItemType.WEAPON,
-            ItemRarity.COMMON,
-            0,
-        )
-    
+        "item-001",
+        "Novice Sword",
+        "A basic sword.",
+        ItemType.WEAPON,
+        ItemRarity.COMMON,
+        0,
+    )
+
     assert item.value == 0
 
 

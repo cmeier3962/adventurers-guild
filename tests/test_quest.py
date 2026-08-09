@@ -2,35 +2,22 @@ import pytest
 
 from eryndor.adventurer import Adventurer
 from eryndor.enums import AdventurerClass, QuestDifficulty, QuestStatus
+from eryndor.item import Item
 from eryndor.party import Party
 from eryndor.quest import Quest
+from eryndor.reward import Reward
 
 
 ### ---------- Fixtures ---------- ###
 @pytest.fixture
-def adventurer() -> Adventurer:
-    """Returns a valid adventurer."""
-    return Adventurer("adv-001", "Nox", AdventurerClass.WARRIOR, 1)
-
-
-@pytest.fixture
-def party(adventurer: Adventurer) -> Party:
-    """Returns a valid party with one member and a leader."""
-    party = Party("12345", "Nox's Party")
-    party.add_member(adventurer)
-    party.assign_leader(adventurer)
-    return party
-
-
-@pytest.fixture
-def quest() -> Quest:
+def quest(reward_with_item: Reward) -> Quest:
     """Returns a valid quest."""
     return Quest(
         "quest-001",
         "New Beginnings",
         "This quest will be the start of the tutorial.",
         QuestDifficulty.EASY,
-        100,
+        reward_with_item,
     )
 
 
@@ -49,38 +36,33 @@ def in_progress_quest(assigned_quest: Quest) -> Quest:
 
 
 ### ---------- Initialize Class Tests ---------- ###
-def test_quest(quest: Quest) -> None:
+def test_quest(quest: Quest, item: Item) -> None:
     """Tests the creation of a Quest object."""
     assert quest.id == "quest-001"
     assert quest.name == "New Beginnings"
     assert quest.description == "This quest will be the start of the tutorial."
     assert quest.difficulty is QuestDifficulty.EASY
-    assert quest.reward_gold == 100
+    assert isinstance(quest.reward, Reward)
+    assert quest.reward.experience == 100
+    assert item in quest.reward.items
     assert quest.status is QuestStatus.NOT_STARTED
 
 
-### ---------- Quest Gold Tests ---------- ###
-def test_quest_zero_gold(quest: Quest) -> None:
-    """Tests the creation of a Quest object with zero gold reward."""
-    quest.reward_gold = 0
-
-    assert quest.reward_gold == 0
-
-
-def test_quest_negative_gold() -> None:
-    """Tests creating a quest with negative gold fails."""
-    with pytest.raises(ValueError, match="Gold reward must be zero or higher"):
-        Quest(
-            "quest-001",
-            "New Beginnings",
-            "This quest will be the start of the tutorial.",
-            QuestDifficulty.EASY,
-            -100,
-        )
+def test_quest_default_reward() -> None:
+    """Tests the creation of a quest object with a default reward."""
+    quest = Quest(
+        "quest-001",
+        "New Beginnings",
+        "This quest will be the start of the tutorial.",
+        QuestDifficulty.EASY,
+    )
+    assert isinstance(quest.reward, Reward)
+    assert quest.reward.experience == 0
+    assert quest.reward.items == []
 
 
 ### ---------- Quest Name Tests ---------- ###
-def test_quest_name_whitespace_only() -> None:
+def test_quest_name_whitespace_only(reward_with_item: Reward) -> None:
     """Tests that the quest name cannot contain only whitespaces."""
     with pytest.raises(ValueError, match="Quest name cannot be empty"):
         Quest(
@@ -88,24 +70,24 @@ def test_quest_name_whitespace_only() -> None:
             "   ",
             "This quest will be the start of the tutorial.",
             QuestDifficulty.EASY,
-            100,
+            reward_with_item,
         )
 
 
-def test_quest_name_whitespace_before_after() -> None:
+def test_quest_name_whitespace_before_after(reward_with_item: Reward) -> None:
     """Tests that leading and trailing quest name whitespaces are removed."""
     quest = Quest(
         "quest-001",
         "   New Beginnings   ",
         "This quest will be the start of the tutorial.",
         QuestDifficulty.EASY,
-        100,
+        reward_with_item,
     )
 
     assert quest.name == "New Beginnings"
 
 
-def test_quest_name_length_short() -> None:
+def test_quest_name_length_short(reward_with_item: Reward) -> None:
     """Tests that a quest name shorter than 3 characters is rejected."""
     with pytest.raises(ValueError, match="Quest name must be between 3 and 50 characters"):
         Quest(
@@ -113,11 +95,11 @@ def test_quest_name_length_short() -> None:
             "Ne",
             "This quest will be the start of the tutorial.",
             QuestDifficulty.EASY,
-            100,
+            reward_with_item,
         )
 
 
-def test_quest_name_length_long() -> None:
+def test_quest_name_length_long(reward_with_item: Reward) -> None:
     """Tests that a quest name longer than 50 characters is rejected."""
     with pytest.raises(ValueError, match="Quest name must be between 3 and 50 characters"):
         Quest(
@@ -125,12 +107,12 @@ def test_quest_name_length_long() -> None:
             "A" * 51,
             "This quest will be the start of the tutorial.",
             QuestDifficulty.EASY,
-            100,
+            reward_with_item,
         )
 
 
 ### ---------- Quest Description Tests ---------- ###
-def test_quest_description_whitespace_only() -> None:
+def test_quest_description_whitespace_only(reward_with_item: Reward) -> None:
     """Tests that the quest description cannot contain only whitespaces."""
     with pytest.raises(ValueError, match="Quest description cannot be empty"):
         Quest(
@@ -138,24 +120,24 @@ def test_quest_description_whitespace_only() -> None:
             "New Beginnings",
             "     ",
             QuestDifficulty.EASY,
-            100,
+            reward_with_item,
         )
 
 
-def test_quest_description_whitespace_before_after() -> None:
+def test_quest_description_whitespace_before_after(reward_with_item: Reward) -> None:
     """Tests that leading and trailing description whitespaces are removed."""
     quest = Quest(
         "quest-001",
         "New Beginnings",
         "     This quest will be the start of the tutorial.     ",
         QuestDifficulty.EASY,
-        100,
+        reward_with_item,
     )
 
     assert quest.description == "This quest will be the start of the tutorial."
 
 
-def test_quest_description_length_short() -> None:
+def test_quest_description_length_short(reward_with_item: Reward) -> None:
     """Tests that a quest description shorter than 10 characters is rejected."""
     with pytest.raises(ValueError, match="Quest description must be at least 10 characters"):
         Quest(
@@ -163,7 +145,7 @@ def test_quest_description_length_short() -> None:
             "New Beginnings",
             "Quest",
             QuestDifficulty.EASY,
-            100,
+            reward_with_item,
         )
 
 

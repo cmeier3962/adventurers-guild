@@ -1,7 +1,7 @@
 import pytest
 
 from eryndor.adventurer import Adventurer
-from eryndor.enums import AdventurerClass, AdventurerStatus, ItemRarity, ItemType
+from eryndor.enums import AdventurerClass, AdventurerStatus
 from eryndor.inventory import Inventory
 from eryndor.item import Item
 
@@ -14,22 +14,9 @@ def adventurer() -> Adventurer:
 
 
 @pytest.fixture
-def inventory() -> Inventory:
+def one_slot_inventory() -> Inventory:
     """Returns a custom inventory of 1."""
     return Inventory(1)
-
-
-@pytest.fixture
-def item() -> Item:
-    """Returns a valid item."""
-    return Item(
-        "item-001",
-        "Novice Sword",
-        "A basic sword.",
-        ItemType.WEAPON,
-        ItemRarity.COMMON,
-        10,
-    )
 
 
 ### ---------- Initialize Class Tests ---------- ###
@@ -43,10 +30,10 @@ def test_adventurer_initialization(adventurer: Adventurer) -> None:
     assert adventurer.status is AdventurerStatus.AVAILABLE
 
 
-def test_adventurer_with_custom_inventory(inventory: Inventory) -> None:
+def test_adventurer_with_custom_inventory(one_slot_inventory: Inventory) -> None:
     """Tests the creation of an adventurer with a custom inventory capacity."""
-    adventurer = Adventurer("adv-001", "Nox", AdventurerClass.WARRIOR, 1, inventory)
-    assert adventurer.inventory is inventory
+    adventurer = Adventurer("adv-001", "Nox", AdventurerClass.WARRIOR, 1, one_slot_inventory)
+    assert adventurer.inventory is one_slot_inventory
     assert adventurer.inventory.capacity == 1
 
 
@@ -60,12 +47,12 @@ def test_adventurers_with_separate_inventories(adventurer: Adventurer, item: Ite
     """Tests the creation of 2 adventurers and their inventories are separate."""
     adventurer2 = Adventurer("adv-002", "Box", AdventurerClass.WARRIOR, 1)
     assert adventurer2.inventory.item_count == 0
-    
+
     assert adventurer.inventory is not adventurer2.inventory
-    
+
     adventurer.inventory.add_item(item)
     assert adventurer.inventory.item_count == 1
-    
+
     assert adventurer2.inventory.item_count == 0
 
 
@@ -203,19 +190,21 @@ def test_status_retired_to_retired(adventurer: Adventurer) -> None:
 def test_receive_item_successfully(adventurer: Adventurer, item: Item) -> None:
     """Tests that an adventurer receives an item and stores it in their inventory."""
     assert adventurer.receive_item(item)
-    
+
     assert item in adventurer.inventory.items
 
 
-def test_receive_item_inventory_full(adventurer: Adventurer, inventory: Inventory, item: Item) -> None:
+def test_receive_item_inventory_full(
+    adventurer: Adventurer, one_slot_inventory: Inventory, item: Item
+) -> None:
     """Tests that receive item fails when inventory is full."""
-    adventurer = Adventurer("adv-001", "Nox", AdventurerClass.WARRIOR, 1, inventory)
-    
+    adventurer = Adventurer("adv-001", "Nox", AdventurerClass.WARRIOR, 1, one_slot_inventory)
+
     assert adventurer.receive_item(item)
-    
+
     assert adventurer.inventory.is_full
-    
+
     assert not adventurer.receive_item(item)
-    
+
     assert adventurer.inventory.available_slots == 0
     assert adventurer.inventory.item_count == 1
