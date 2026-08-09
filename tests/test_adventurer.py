@@ -1,7 +1,9 @@
 import pytest
 
 from eryndor.adventurer import Adventurer
-from eryndor.enums import AdventurerClass, AdventurerStatus
+from eryndor.enums import AdventurerClass, AdventurerStatus, ItemRarity, ItemType
+from eryndor.inventory import Inventory
+from eryndor.item import Item
 
 
 ### ---------- Fixtures ---------- ###
@@ -11,14 +13,60 @@ def adventurer() -> Adventurer:
     return Adventurer("adv-001", "Nox", AdventurerClass.WARRIOR, 1)
 
 
+@pytest.fixture
+def inventory() -> Inventory:
+    """Returns a custom inventory of 1."""
+    return Inventory(1)
+
+
+@pytest.fixture
+def item() -> Item:
+    """Returns a valid item."""
+    return Item(
+        "item-001",
+        "Novice Sword",
+        "A basic sword.",
+        ItemType.WEAPON,
+        ItemRarity.COMMON,
+        10,
+    )
+
+
 ### ---------- Initialize Class Tests ---------- ###
-def test_adventurer(adventurer: Adventurer) -> None:
+def test_adventurer_initialization(adventurer: Adventurer) -> None:
     """Tests a pre-defined adventurer."""
     assert adventurer.id == "adv-001"
     assert adventurer.username == "Nox"
     assert adventurer.adventurer_class is AdventurerClass.WARRIOR
     assert adventurer.level == 1
+    assert isinstance(adventurer.inventory, Inventory)
     assert adventurer.status is AdventurerStatus.AVAILABLE
+
+
+def test_adventurer_with_custom_inventory(inventory: Inventory) -> None:
+    """Tests the creation of an adventurer with a custom inventory capacity."""
+    adventurer = Adventurer("adv-001", "Nox", AdventurerClass.WARRIOR, 1, inventory)
+    assert adventurer.inventory is inventory
+    assert adventurer.inventory.capacity == 1
+
+
+def test_adventurer_with_inventory_as_none() -> None:
+    """Tests the creation of an adventurer with no inventory provided."""
+    adventurer = Adventurer("adv-001", "Nox", AdventurerClass.WARRIOR, 1, None)
+    assert isinstance(adventurer.inventory, Inventory)
+
+
+def test_adventurers_with_separate_inventories(adventurer: Adventurer, item: Item) -> None:
+    """Tests the creation of 2 adventurers and their inventories are separate."""
+    adventurer2 = Adventurer("adv-002", "Box", AdventurerClass.WARRIOR, 1)
+    assert adventurer2.inventory.item_count == 0
+    
+    assert adventurer.inventory is not adventurer2.inventory
+    
+    adventurer.inventory.add_item(item)
+    assert adventurer.inventory.item_count == 1
+    
+    assert adventurer2.inventory.item_count == 0
 
 
 ### ---------- Username Tests ---------- ###
@@ -149,3 +197,25 @@ def test_status_retired_to_retired(adventurer: Adventurer) -> None:
         match="The adventurer is already retired",
     ):
         adventurer.retire()
+
+
+### ---------- Inventory Tests ---------- ###
+def test_receive_item_successfully(adventurer: Adventurer, item: Item) -> None:
+    """Tests that an adventurer receives an item and stores it in their inventory."""
+    assert adventurer.receive_item(item)
+    
+    assert item in adventurer.inventory.items
+
+
+def test_receive_item_inventory_full(adventurer: Adventurer, inventory: Inventory, item: Item) -> None:
+    """Tests that receive item fails when inventory is full."""
+    adventurer = Adventurer("adv-001", "Nox", AdventurerClass.WARRIOR, 1, inventory)
+    
+    assert adventurer.receive_item(item)
+    
+    assert adventurer.inventory.is_full
+    
+    assert not adventurer.receive_item(item)
+    
+    assert adventurer.inventory.available_slots == 0
+    assert adventurer.inventory.item_count == 1
