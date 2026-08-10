@@ -1,6 +1,7 @@
 from eryndor.enums import AdventurerClass, AdventurerStatus
 from eryndor.inventory import Inventory
 from eryndor.item import Item
+from eryndor.progression import Progression
 
 
 class Adventurer:
@@ -11,7 +12,6 @@ class Adventurer:
         adventurer_id: str,
         username: str,
         adventurer_class: AdventurerClass,
-        level: int,
         inventory: Inventory | None = None,
     ) -> None:
         self.id = adventurer_id
@@ -25,23 +25,25 @@ class Adventurer:
 
         self.adventurer_class = adventurer_class
 
-        if level < 1:
-            raise ValueError("Level must be greater than zero.")
-        self.level = level
+        self.inventory = inventory if inventory else Inventory()
+
+        self.progression = Progression()
 
         self.status = AdventurerStatus.AVAILABLE
 
-        if inventory is None:
-            self.inventory = Inventory()
-        else:
-            self.inventory = inventory
+    @property
+    def experience(self) -> int:
+        """Returns current adventurer experience."""
+        return self.progression.experience
 
-    def level_up(self) -> None:
-        """Increases adventurer's level by 1."""
-        if self.status == AdventurerStatus.RETIRED:
-            raise ValueError("Retired adventurers cannot level up.")
+    @property
+    def level(self) -> int:
+        """Returns current adventurer level."""
+        return self.progression.level
 
-        self.level += 1
+    def gain_experience(self, amount: int) -> None:
+        """Adds experience to the adventurer's progression."""
+        self.progression.add_experience(amount)
 
     def injured(self) -> None:
         """Updates the adventurer's status to injured."""

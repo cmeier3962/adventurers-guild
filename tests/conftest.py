@@ -10,7 +10,7 @@ from eryndor.reward import Reward
 @pytest.fixture
 def adventurer() -> Adventurer:
     """Returns a valid adventurer."""
-    return Adventurer("adv-001", "Nox", AdventurerClass.WARRIOR, 1)
+    return Adventurer("adv-001", "Nox", AdventurerClass.WARRIOR)
 
 
 @pytest.fixture
