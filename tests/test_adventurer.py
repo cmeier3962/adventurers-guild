@@ -5,6 +5,7 @@ from eryndor.enums import AdventurerClass, AdventurerStatus
 from eryndor.inventory import Inventory
 from eryndor.item import Item
 from eryndor.progression import Progression
+from eryndor.reward import Reward
 
 
 ### ---------- Fixtures ---------- ###
@@ -199,3 +200,26 @@ def test_gain_experience(adventurer: Adventurer) -> None:
     adventurer.gain_experience(100)
 
     assert adventurer.experience == 100
+
+
+### ---------- Rewards Tests ---------- ###
+def test_receive_reward_exp_and_items_no_leftover_list(adventurer: Adventurer, reward_with_item: Reward) -> None:
+    """Tests that the adventurer successfully receives both the exp and item from receive rewards."""
+    assert adventurer.receive_reward(reward_with_item) == []
+    
+    assert adventurer.experience == 100
+    assert adventurer.inventory.item_count == 1
+
+
+def test_receive_reward_with_full_inventory(one_slot_inventory: Inventory, item: Item, reward_with_item: Reward) -> None:
+    """Tests that the adventurer receives the exp but has a leftover list from receive rewards."""
+    adventurer = Adventurer("adv-001", "Nox", AdventurerClass.WARRIOR, one_slot_inventory)
+    
+    adventurer.receive_item(item)
+    assert adventurer.inventory.is_full
+    
+    leftover_items = adventurer.receive_reward(reward_with_item)
+    assert leftover_items == reward_with_item.items
+    assert adventurer.experience == 100
+    assert item in adventurer.inventory.items
+    assert adventurer.inventory.item_count == 1

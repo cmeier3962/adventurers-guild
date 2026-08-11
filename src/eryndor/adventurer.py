@@ -2,6 +2,7 @@ from eryndor.enums import AdventurerClass, AdventurerStatus
 from eryndor.inventory import Inventory
 from eryndor.item import Item
 from eryndor.progression import Progression
+from eryndor.reward import Reward
 
 
 class Adventurer:
@@ -71,3 +72,15 @@ class Adventurer:
     def receive_item(self, item: Item) -> bool:
         """Attempts to receive an item and store it in adventurers inventory."""
         return self.inventory.add_item(item)
+    
+    def receive_reward(self, reward: Reward) -> list[Item]:
+        """Applies a reward and returns any items that could not be stored."""
+        self.progression.add_experience(reward.experience)
+        
+        leftover_items: list[Item] = []
+        
+        for item in reward.items:
+            if not self.receive_item(item):
+                leftover_items.append(item)
+                
+        return leftover_items
