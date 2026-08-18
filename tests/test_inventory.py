@@ -1,6 +1,6 @@
 import pytest
 
-from eryndor.enums import ItemRarity, ItemType
+from eryndor.enums import ItemRarity, ItemType, EquipmentSlot
 from eryndor.inventory import Inventory
 from eryndor.item import Item
 
@@ -96,6 +96,7 @@ def test_remove_item_failure_when_item_not_found_in_non_empty_inventory(item: It
         ItemType.WEAPON,
         ItemRarity.COMMON,
         20,
+        EquipmentSlot.MAIN_HAND,
     )
     assert item2 not in inventory.items
 

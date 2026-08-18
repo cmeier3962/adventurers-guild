@@ -28,6 +28,8 @@ class Adventurer:
 
         self.inventory = inventory if inventory else Inventory()
 
+        self.unclaimed_items: list[Item] = []
+
         self.progression = Progression()
 
         self.status = AdventurerStatus.AVAILABLE
@@ -72,15 +74,21 @@ class Adventurer:
     def receive_item(self, item: Item) -> bool:
         """Attempts to receive an item and store it in adventurers inventory."""
         return self.inventory.add_item(item)
-    
-    def receive_reward(self, reward: Reward) -> list[Item]:
-        """Applies a reward and returns any items that could not be stored."""
+
+    def receive_reward(self, reward: Reward) -> None:
+        """Applies a reward and stores any unstored items as unclaimed."""
         self.progression.add_experience(reward.experience)
-        
-        leftover_items: list[Item] = []
-        
+
         for item in reward.items:
             if not self.receive_item(item):
-                leftover_items.append(item)
-                
-        return leftover_items
+                self.unclaimed_items.append(item)
+
+    def claim_unclaimed_items(self) -> None:
+        """Attempts to move unclaimed items into the adventurer's inventory."""
+        remaining_items: list[Item] = []
+
+        for item in self.unclaimed_items:
+            if not self.receive_item(item):
+                remaining_items.append(item)
+
+        self.unclaimed_items = remaining_items

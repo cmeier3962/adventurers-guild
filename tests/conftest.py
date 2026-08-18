@@ -1,7 +1,7 @@
 import pytest
 
 from eryndor.adventurer import Adventurer
-from eryndor.enums import AdventurerClass, ItemRarity, ItemType
+from eryndor.enums import AdventurerClass, ItemRarity, ItemType, EquipmentSlot
 from eryndor.item import Item
 from eryndor.party import Party
 from eryndor.reward import Reward
@@ -23,6 +23,7 @@ def item() -> Item:
         ItemType.WEAPON,
         ItemRarity.COMMON,
         10,
+        EquipmentSlot.MAIN_HAND,
     )
 
 

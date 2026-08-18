@@ -203,23 +203,55 @@ def test_gain_experience(adventurer: Adventurer) -> None:
 
 
 ### ---------- Rewards Tests ---------- ###
-def test_receive_reward_exp_and_items_no_leftover_list(adventurer: Adventurer, reward_with_item: Reward) -> None:
+def test_receive_reward_exp_and_items_no_unclaimed_items(
+    adventurer: Adventurer, reward_with_item: Reward
+) -> None:
     """Tests that the adventurer successfully receives both the exp and item from receive rewards."""
-    assert adventurer.receive_reward(reward_with_item) == []
-    
+    adventurer.receive_reward(reward_with_item)
+
     assert adventurer.experience == 100
     assert adventurer.inventory.item_count == 1
+    assert adventurer.unclaimed_items == []
 
 
-def test_receive_reward_with_full_inventory(one_slot_inventory: Inventory, item: Item, reward_with_item: Reward) -> None:
-    """Tests that the adventurer receives the exp but has a leftover list from receive rewards."""
+def test_receive_reward_with_full_inventory(
+    one_slot_inventory: Inventory, item: Item, reward_with_item: Reward
+) -> None:
+    """Tests that the adventurer receives the exp and stores unstored reward items as unclaimed."""
     adventurer = Adventurer("adv-001", "Nox", AdventurerClass.WARRIOR, one_slot_inventory)
-    
+
     adventurer.receive_item(item)
     assert adventurer.inventory.is_full
-    
-    leftover_items = adventurer.receive_reward(reward_with_item)
-    assert leftover_items == reward_with_item.items
+
+    adventurer.receive_reward(reward_with_item)
+    assert adventurer.unclaimed_items == reward_with_item.items
     assert adventurer.experience == 100
     assert item in adventurer.inventory.items
     assert adventurer.inventory.item_count == 1
+
+
+def test_claim_unclaimed_items(adventurer: Adventurer, item: Item) -> None:
+    """Tests to verify that unclaimed items successfully move to the adventurers inventory."""
+    adventurer.unclaimed_items.append(item)
+    assert adventurer.unclaimed_items == [item]
+
+    adventurer.claim_unclaimed_items()
+    assert item in adventurer.inventory.items
+    assert adventurer.unclaimed_items == []
+
+
+def test_claim_unclaimed_items_with_full_inventory(
+    one_slot_inventory: Inventory, item: Item
+) -> None:
+    """Tests that items that don't fit in the inventory remain in unclaimed items."""
+    adventurer = Adventurer("adv-001", "Nox", AdventurerClass.WARRIOR, one_slot_inventory)
+
+    adventurer.receive_item(item)
+    assert adventurer.inventory.item_count == 1
+
+    adventurer.unclaimed_items.append(item)
+    assert len(adventurer.unclaimed_items) == 1
+
+    adventurer.claim_unclaimed_items()
+    assert adventurer.inventory.item_count == 1
+    assert len(adventurer.unclaimed_items) == 1
