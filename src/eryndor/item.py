@@ -1,4 +1,4 @@
-from eryndor.enums import ItemRarity, ItemType
+from eryndor.enums import ItemRarity, ItemType, EquipmentSlot
 
 
 class Item:
@@ -12,6 +12,7 @@ class Item:
         item_type: ItemType,
         rarity: ItemRarity,
         value: int,
+        slot: EquipmentSlot | None = None,
     ) -> None:
         self.id = item_id
 
@@ -36,3 +37,31 @@ class Item:
         if value < 0:
             raise ValueError("Item value cannot be less than 0.")
         self.value = value
+
+        if (
+            self.item_type not in [ItemType.WEAPON, ItemType.ARMOR, ItemType.ACCESSORY]
+            and slot is not None
+        ):
+            raise ValueError("Item cannot be equipped.")
+        if self.item_type in [ItemType.WEAPON, ItemType.ARMOR, ItemType.ACCESSORY] and slot is None:
+            raise ValueError("Item must be assigned to an equipment slot.")
+        if self.item_type == ItemType.WEAPON and slot not in [
+            EquipmentSlot.MAIN_HAND,
+            EquipmentSlot.OFF_HAND,
+        ]:
+            raise ValueError("Item can only be equipped in a weapon slot.")
+        if self.item_type == ItemType.ARMOR and slot not in [
+            EquipmentSlot.HEAD,
+            EquipmentSlot.CHEST,
+            EquipmentSlot.HANDS,
+            EquipmentSlot.LEGS,
+            EquipmentSlot.FEET,
+        ]:
+            raise ValueError("Item can only be equipped in an armor slot.")
+        if self.item_type == ItemType.ACCESSORY and slot not in [
+            EquipmentSlot.BACK,
+            EquipmentSlot.RING,
+            EquipmentSlot.AMULET,
+        ]:
+            raise ValueError("Item can only be equipped in an accessory slot.")
+        self.slot = slot

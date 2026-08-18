@@ -1,6 +1,6 @@
 import pytest
 
-from eryndor.enums import ItemRarity, ItemType
+from eryndor.enums import ItemRarity, ItemType, EquipmentSlot
 from eryndor.item import Item
 
 
@@ -13,6 +13,7 @@ def test_item(item: Item) -> None:
     assert item.item_type is ItemType.WEAPON
     assert item.rarity is ItemRarity.COMMON
     assert item.value == 10
+    assert item.slot is EquipmentSlot.MAIN_HAND
 
 
 ### ---------- Item Name Tests ---------- ###
@@ -26,6 +27,7 @@ def test_item_name_whitespace_only() -> None:
             ItemType.WEAPON,
             ItemRarity.COMMON,
             10,
+            EquipmentSlot.MAIN_HAND,
         )
 
 
@@ -38,6 +40,7 @@ def test_item_name_whitespace_before_and_after() -> None:
         ItemType.WEAPON,
         ItemRarity.COMMON,
         10,
+        EquipmentSlot.MAIN_HAND,
     )
 
     assert item.name == "Novice Sword"
@@ -53,6 +56,7 @@ def test_item_name_length_short() -> None:
             ItemType.WEAPON,
             ItemRarity.COMMON,
             10,
+            EquipmentSlot.MAIN_HAND,
         )
 
 
@@ -66,6 +70,7 @@ def test_item_name_length_long() -> None:
             ItemType.WEAPON,
             ItemRarity.COMMON,
             10,
+            EquipmentSlot.MAIN_HAND,
         )
 
 
@@ -80,6 +85,7 @@ def test_item_description_whitespace_only() -> None:
             ItemType.WEAPON,
             ItemRarity.COMMON,
             10,
+            EquipmentSlot.MAIN_HAND,
         )
 
 
@@ -92,6 +98,7 @@ def test_item_description_whitespace_before_and_after() -> None:
         ItemType.WEAPON,
         ItemRarity.COMMON,
         10,
+        EquipmentSlot.MAIN_HAND,
     )
 
     assert item.description == "A basic sword."
@@ -107,6 +114,7 @@ def test_item_description_length_short() -> None:
             ItemType.WEAPON,
             ItemRarity.COMMON,
             10,
+            EquipmentSlot.MAIN_HAND,
         )
 
 
@@ -120,6 +128,7 @@ def test_item_value_zero() -> None:
         ItemType.WEAPON,
         ItemRarity.COMMON,
         0,
+        EquipmentSlot.MAIN_HAND,
     )
 
     assert item.value == 0
@@ -135,4 +144,65 @@ def test_item_value_below_zero() -> None:
             ItemType.WEAPON,
             ItemRarity.COMMON,
             -100,
+            EquipmentSlot.MAIN_HAND,
+        )
+
+
+### ---------- Item Type and Slot Tests ---------- ###
+@pytest.mark.parametrize(
+    ("item_type", "slot"),
+    [
+        (ItemType.WEAPON, EquipmentSlot.MAIN_HAND),
+        (ItemType.ARMOR, EquipmentSlot.CHEST),
+        (ItemType.ACCESSORY, EquipmentSlot.RING),
+    ],
+)
+def test_item_valid_equipment_slots(
+    item_type: ItemType,
+    slot: EquipmentSlot,
+) -> None:
+    """Tests valid item type and slot combinations."""
+    item = Item(
+        "item-001",
+        "Test Item",
+        "A test item.",
+        item_type,
+        ItemRarity.COMMON,
+        10,
+        slot,
+    )
+
+    assert item.item_type is item_type
+    assert item.slot is slot
+
+
+@pytest.mark.parametrize(
+    ("item_type", "slot", "error_message"),
+    [
+        (ItemType.CONSUMABLE, EquipmentSlot.MAIN_HAND, "Item cannot be equipped."),
+        (ItemType.WEAPON, None, "Item must be assigned to an equipment slot."),
+        (ItemType.WEAPON, EquipmentSlot.HEAD, "Item can only be equipped in a weapon slot."),
+        (ItemType.ARMOR, EquipmentSlot.MAIN_HAND, "Item can only be equipped in an armor slot."),
+        (
+            ItemType.ACCESSORY,
+            EquipmentSlot.MAIN_HAND,
+            "Item can only be equipped in an accessory slot",
+        ),
+    ],
+)
+def test_item_invalid_equipment_slots(
+    item_type: ItemType,
+    slot: EquipmentSlot,
+    error_message: str,
+) -> None:
+    """Tests invalid item type and slot combinations."""
+    with pytest.raises(ValueError, match=error_message):
+        Item(
+            "item-001",
+            "Test Item",
+            "A test item.",
+            item_type,
+            ItemRarity.COMMON,
+            10,
+            slot,
         )

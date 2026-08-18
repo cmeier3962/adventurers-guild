@@ -228,7 +228,7 @@ def test_party_already_assigned_quest(
 ) -> None:
     """Tests that a quest cannot be assigned another party."""
     party2 = Party("67890", "Box's Party")
-    adventurer2 = Adventurer("adv-002", "Box", AdventurerClass.WARRIOR, 1)
+    adventurer2 = Adventurer("adv-002", "Box", AdventurerClass.WARRIOR)
 
     party2.add_member(adventurer2)
     party2.assign_leader(adventurer2)

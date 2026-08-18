@@ -43,6 +43,7 @@ class ItemType(StrEnum):
 
     WEAPON = "Weapon"
     ARMOR = "Armor"
+    ACCESSORY = "Accessory"
     CONSUMABLE = "Consumable"
     MATERIAL = "Material"
     QUEST = "Quest"
@@ -58,3 +59,18 @@ class ItemRarity(StrEnum):
     EXOTIC = "Exotic"
     ASCENDED = "Ascended"
     LEGENDARY = "Legendary"
+
+
+class EquipmentSlot(StrEnum):
+    """Available equipment slots."""
+
+    HEAD = "Head"
+    CHEST = "Chest"
+    HANDS = "Hands"
+    LEGS = "Legs"
+    FEET = "Feet"
+    BACK = "Back"
+    RING = "Ring"
+    AMULET = "Amulet"
+    MAIN_HAND = "Main Hand"
+    OFF_HAND = "Off Hand"

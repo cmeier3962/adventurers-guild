@@ -4,13 +4,15 @@ from eryndor.adventurer import Adventurer
 from eryndor.enums import AdventurerClass, AdventurerStatus
 from eryndor.inventory import Inventory
 from eryndor.item import Item
+from eryndor.progression import Progression
+from eryndor.reward import Reward
 
 
 ### ---------- Fixtures ---------- ###
 @pytest.fixture
 def adventurer() -> Adventurer:
     """Returns a valid available adventurer."""
-    return Adventurer("adv-001", "Nox", AdventurerClass.WARRIOR, 1)
+    return Adventurer("adv-001", "Nox", AdventurerClass.WARRIOR)
 
 
 @pytest.fixture
@@ -25,27 +27,29 @@ def test_adventurer_initialization(adventurer: Adventurer) -> None:
     assert adventurer.id == "adv-001"
     assert adventurer.username == "Nox"
     assert adventurer.adventurer_class is AdventurerClass.WARRIOR
-    assert adventurer.level == 1
     assert isinstance(adventurer.inventory, Inventory)
+    assert isinstance(adventurer.progression, Progression)
+    assert adventurer.experience == 0
+    assert adventurer.level == 1
     assert adventurer.status is AdventurerStatus.AVAILABLE
 
 
 def test_adventurer_with_custom_inventory(one_slot_inventory: Inventory) -> None:
     """Tests the creation of an adventurer with a custom inventory capacity."""
-    adventurer = Adventurer("adv-001", "Nox", AdventurerClass.WARRIOR, 1, one_slot_inventory)
+    adventurer = Adventurer("adv-001", "Nox", AdventurerClass.WARRIOR, one_slot_inventory)
     assert adventurer.inventory is one_slot_inventory
     assert adventurer.inventory.capacity == 1
 
 
 def test_adventurer_with_inventory_as_none() -> None:
     """Tests the creation of an adventurer with no inventory provided."""
-    adventurer = Adventurer("adv-001", "Nox", AdventurerClass.WARRIOR, 1, None)
+    adventurer = Adventurer("adv-001", "Nox", AdventurerClass.WARRIOR, None)
     assert isinstance(adventurer.inventory, Inventory)
 
 
 def test_adventurers_with_separate_inventories(adventurer: Adventurer, item: Item) -> None:
-    """Tests the creation of 2 adventurers and their inventories are separate."""
-    adventurer2 = Adventurer("adv-002", "Box", AdventurerClass.WARRIOR, 1)
+    """Tests the creation of 2 adventurers and verifies their inventories are separate."""
+    adventurer2 = Adventurer("adv-002", "Box", AdventurerClass.WARRIOR)
     assert adventurer2.inventory.item_count == 0
 
     assert adventurer.inventory is not adventurer2.inventory
@@ -56,11 +60,18 @@ def test_adventurers_with_separate_inventories(adventurer: Adventurer, item: Ite
     assert adventurer2.inventory.item_count == 0
 
 
+def test_adventurers_with_separate_progressions(adventurer: Adventurer) -> None:
+    """Tests the creation of 2 adventurers and verifies their progressions are separate."""
+    adventurer2 = Adventurer("adv-002", "Box", AdventurerClass.WARRIOR)
+
+    assert adventurer.progression is not adventurer2.progression
+
+
 ### ---------- Username Tests ---------- ###
 def test_username_whitespace_only() -> None:
     """Tests that a ValueError is raised when a username is empty."""
     with pytest.raises(ValueError, match="Username cannot be empty"):
-        Adventurer("adv-001", "   ", AdventurerClass.WARRIOR, 1)
+        Adventurer("adv-001", "   ", AdventurerClass.WARRIOR)
 
 
 def test_username_length_short() -> None:
@@ -69,7 +80,7 @@ def test_username_length_short() -> None:
         ValueError,
         match="Username must be between 3 and 15 characters",
     ):
-        Adventurer("adv-001", "No", AdventurerClass.WARRIOR, 1)
+        Adventurer("adv-001", "No", AdventurerClass.WARRIOR)
 
 
 def test_username_length_long() -> None:
@@ -78,36 +89,7 @@ def test_username_length_long() -> None:
         ValueError,
         match="Username must be between 3 and 15 characters",
     ):
-        Adventurer("adv-001", "Noxtrum1234567890", AdventurerClass.WARRIOR, 1)
-
-
-### ---------- Level Up Tests ---------- ###
-def test_level_up(adventurer: Adventurer) -> None:
-    """Tests that the adventurer levels up by 1."""
-    adventurer.level_up()
-
-    assert adventurer.level == 2
-
-
-def test_level_low() -> None:
-    """Tests that a ValueError triggers for an invalid level."""
-    with pytest.raises(ValueError, match="Level must be greater than zero"):
-        Adventurer("adv-001", "Nox", AdventurerClass.WARRIOR, 0)
-
-
-def test_level_up_while_retired(adventurer: Adventurer) -> None:
-    """Tests that a retired adventurer cannot level up."""
-    adventurer.retire()
-
-    assert adventurer.status is AdventurerStatus.RETIRED
-
-    with pytest.raises(
-        ValueError,
-        match="Retired adventurers cannot level up",
-    ):
-        adventurer.level_up()
-
-    assert adventurer.level == 1
+        Adventurer("adv-001", "Noxtrum1234567890", AdventurerClass.WARRIOR)
 
 
 ### ---------- Status Tests ---------- ###
@@ -198,7 +180,7 @@ def test_receive_item_inventory_full(
     adventurer: Adventurer, one_slot_inventory: Inventory, item: Item
 ) -> None:
     """Tests that receive item fails when inventory is full."""
-    adventurer = Adventurer("adv-001", "Nox", AdventurerClass.WARRIOR, 1, one_slot_inventory)
+    adventurer = Adventurer("adv-001", "Nox", AdventurerClass.WARRIOR, one_slot_inventory)
 
     assert adventurer.receive_item(item)
 
@@ -208,3 +190,68 @@ def test_receive_item_inventory_full(
 
     assert adventurer.inventory.available_slots == 0
     assert adventurer.inventory.item_count == 1
+
+
+### ---------- Experience/Level Tests ---------- ###
+def test_gain_experience(adventurer: Adventurer) -> None:
+    """Tests to add experience to adventurer's progression."""
+    assert adventurer.experience == 0
+
+    adventurer.gain_experience(100)
+
+    assert adventurer.experience == 100
+
+
+### ---------- Rewards Tests ---------- ###
+def test_receive_reward_exp_and_items_no_unclaimed_items(
+    adventurer: Adventurer, reward_with_item: Reward
+) -> None:
+    """Tests that the adventurer successfully receives both the exp and item from receive rewards."""
+    adventurer.receive_reward(reward_with_item)
+
+    assert adventurer.experience == 100
+    assert adventurer.inventory.item_count == 1
+    assert adventurer.unclaimed_items == []
+
+
+def test_receive_reward_with_full_inventory(
+    one_slot_inventory: Inventory, item: Item, reward_with_item: Reward
+) -> None:
+    """Tests that the adventurer receives the exp and stores unstored reward items as unclaimed."""
+    adventurer = Adventurer("adv-001", "Nox", AdventurerClass.WARRIOR, one_slot_inventory)
+
+    adventurer.receive_item(item)
+    assert adventurer.inventory.is_full
+
+    adventurer.receive_reward(reward_with_item)
+    assert adventurer.unclaimed_items == reward_with_item.items
+    assert adventurer.experience == 100
+    assert item in adventurer.inventory.items
+    assert adventurer.inventory.item_count == 1
+
+
+def test_claim_unclaimed_items(adventurer: Adventurer, item: Item) -> None:
+    """Tests to verify that unclaimed items successfully move to the adventurers inventory."""
+    adventurer.unclaimed_items.append(item)
+    assert adventurer.unclaimed_items == [item]
+
+    adventurer.claim_unclaimed_items()
+    assert item in adventurer.inventory.items
+    assert adventurer.unclaimed_items == []
+
+
+def test_claim_unclaimed_items_with_full_inventory(
+    one_slot_inventory: Inventory, item: Item
+) -> None:
+    """Tests that items that don't fit in the inventory remain in unclaimed items."""
+    adventurer = Adventurer("adv-001", "Nox", AdventurerClass.WARRIOR, one_slot_inventory)
+
+    adventurer.receive_item(item)
+    assert adventurer.inventory.item_count == 1
+
+    adventurer.unclaimed_items.append(item)
+    assert len(adventurer.unclaimed_items) == 1
+
+    adventurer.claim_unclaimed_items()
+    assert adventurer.inventory.item_count == 1
+    assert len(adventurer.unclaimed_items) == 1
