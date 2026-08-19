@@ -154,7 +154,7 @@ def test_item_value_below_zero() -> None:
     [
         (ItemType.WEAPON, EquipmentSlot.MAIN_HAND),
         (ItemType.ARMOR, EquipmentSlot.CHEST),
-        (ItemType.ACCESSORY, EquipmentSlot.RING),
+        (ItemType.ACCESSORY, EquipmentSlot.RING_1),
     ],
 )
 def test_item_valid_equipment_slots(

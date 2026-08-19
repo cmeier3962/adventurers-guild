@@ -60,7 +60,8 @@ class Item:
             raise ValueError("Item can only be equipped in an armor slot.")
         if self.item_type == ItemType.ACCESSORY and slot not in [
             EquipmentSlot.BACK,
-            EquipmentSlot.RING,
+            EquipmentSlot.RING_1,
+            EquipmentSlot.RING_2,
             EquipmentSlot.AMULET,
         ]:
             raise ValueError("Item can only be equipped in an accessory slot.")

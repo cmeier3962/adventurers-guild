@@ -1,7 +1,8 @@
 import pytest
 
 from eryndor.adventurer import Adventurer
-from eryndor.enums import AdventurerClass, AdventurerStatus
+from eryndor.enums import AdventurerClass, AdventurerStatus, ItemType, ItemRarity, EquipmentSlot
+from eryndor.equipment import Equipment
 from eryndor.inventory import Inventory
 from eryndor.item import Item
 from eryndor.progression import Progression
@@ -28,6 +29,7 @@ def test_adventurer_initialization(adventurer: Adventurer) -> None:
     assert adventurer.username == "Nox"
     assert adventurer.adventurer_class is AdventurerClass.WARRIOR
     assert isinstance(adventurer.inventory, Inventory)
+    assert isinstance(adventurer.equipment, Equipment)
     assert isinstance(adventurer.progression, Progression)
     assert adventurer.experience == 0
     assert adventurer.level == 1
@@ -255,3 +257,53 @@ def test_claim_unclaimed_items_with_full_inventory(
     adventurer.claim_unclaimed_items()
     assert adventurer.inventory.item_count == 1
     assert len(adventurer.unclaimed_items) == 1
+
+
+### ---------- Equip Item Tests ---------- ###
+def test_equip_item_to_empty_slot(adventurer: Adventurer, item: Item) -> None:
+    """Test to equip an item to an empty slot"""
+    adventurer.receive_item(item)
+    assert item in adventurer.inventory.items
+    assert item.slot is not None
+
+    assert adventurer.equip_item(item)
+    assert adventurer.equipment.slots[item.slot] == item
+    assert item not in adventurer.inventory.items
+
+
+def test_equip_item_to_occupied_slot(adventurer: Adventurer, item: Item) -> None:
+    """Test to equip an item in a preoccupied slot and return the item to the inventory."""
+    adventurer.receive_item(item)
+    assert item.slot is not None
+    assert adventurer.equip_item(item)
+
+    item_2 = Item(
+        "Item-002",
+        "Test Sword",
+        "A test sword.",
+        ItemType.WEAPON,
+        ItemRarity.COMMON,
+        10,
+        EquipmentSlot.MAIN_HAND,
+    )
+    assert adventurer.receive_item(item_2)
+    assert item_2.slot is not None
+
+    assert adventurer.equip_item(item_2)
+    assert adventurer.equipment.slots[item_2.slot] == item_2
+    assert item in adventurer.inventory.items
+    assert item_2 not in adventurer.inventory.items
+
+
+def test_equip_item_not_in_inventory(adventurer: Adventurer, item: Item) -> None:
+    """Test to fail to equip an item not in inventory."""
+    assert item not in adventurer.inventory.items
+    assert not adventurer.equip_item(item)
+
+
+def test_equip_non_equippable_item(adventurer: Adventurer) -> None:
+    """Test to fail to equip a non equippable item."""
+    item_2 = Item(
+        "Item-002", "Test Sword", "A test sword.", ItemType.CONSUMABLE, ItemRarity.COMMON, 10, None
+    )
+    assert not adventurer.equip_item(item_2)

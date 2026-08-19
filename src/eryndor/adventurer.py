@@ -1,4 +1,5 @@
-from eryndor.enums import AdventurerClass, AdventurerStatus
+from eryndor.enums import AdventurerClass, AdventurerStatus, ItemType
+from eryndor.equipment import Equipment
 from eryndor.inventory import Inventory
 from eryndor.item import Item
 from eryndor.progression import Progression
@@ -27,6 +28,8 @@ class Adventurer:
         self.adventurer_class = adventurer_class
 
         self.inventory = inventory if inventory else Inventory()
+
+        self.equipment = Equipment()
 
         self.unclaimed_items: list[Item] = []
 
@@ -92,3 +95,19 @@ class Adventurer:
                 remaining_items.append(item)
 
         self.unclaimed_items = remaining_items
+
+    def equip_item(self, item: Item) -> bool:
+        """Attempts to equip an item and return an already equipped item to the inventory."""
+        if item not in self.inventory.items:
+            return False
+        if item.slot is None:
+            return False
+
+        self.inventory.remove_item(item)
+
+        unequipped_item = self.equipment.equip_item(item)
+
+        if unequipped_item is not None:
+            self.inventory.add_item(unequipped_item)
+
+        return True
