@@ -75,3 +75,11 @@ class EquipmentSlot(StrEnum):
     AMULET = "Amulet"
     MAIN_HAND = "Main Hand"
     OFF_HAND = "Off Hand"
+
+
+class StatType(StrEnum):
+    """Available equipment stat bonuses."""
+
+    ATTACK = "Attack"
+    DEFENSE = "Defense"
+    HEALTH = "Health"

@@ -306,4 +306,39 @@ def test_equip_non_equippable_item(adventurer: Adventurer) -> None:
     item_2 = Item(
         "Item-002", "Test Sword", "A test sword.", ItemType.CONSUMABLE, ItemRarity.COMMON, 10, None
     )
+    adventurer.receive_item(item_2)
     assert not adventurer.equip_item(item_2)
+
+
+def test_unequip_item_with_full_inventory(item: Item, one_slot_inventory: Inventory) -> None:
+    """Tests to fail to unequip an item due to full inventory."""
+    adventurer = Adventurer("adv-001", "Nox", AdventurerClass.WARRIOR, one_slot_inventory)
+    adventurer.receive_item(item)
+    adventurer.equip_item(item)
+    assert adventurer.equipment.slots[EquipmentSlot.MAIN_HAND] is item
+
+    item_2 = Item(
+        "Item-002", "Test Sword", "A test sword.", ItemType.CONSUMABLE, ItemRarity.COMMON, 10, None
+    )
+    adventurer.receive_item(item_2)
+
+    assert not adventurer.unequip_item(EquipmentSlot.MAIN_HAND)
+    assert adventurer.equipment.slots[EquipmentSlot.MAIN_HAND] is item
+
+
+def test_unequip_item_on_empty_slot(adventurer: Adventurer) -> None:
+    """Tests to fail unequipping an item slot that has no item."""
+    assert adventurer.equipment.slots[EquipmentSlot.MAIN_HAND] is None
+    assert not adventurer.unequip_item(EquipmentSlot.MAIN_HAND)
+
+
+def test_unequip_item_successfully(adventurer: Adventurer, item: Item) -> None:
+    """Tests that unequipping an item returns the item to the inventory."""
+    adventurer.receive_item(item)
+    adventurer.equip_item(item)
+    assert adventurer.equipment.slots[EquipmentSlot.MAIN_HAND] is item
+    assert not adventurer.inventory.is_full
+
+    assert adventurer.unequip_item(EquipmentSlot.MAIN_HAND)
+    assert adventurer.equipment.slots[EquipmentSlot.MAIN_HAND] is None
+    assert item in adventurer.inventory.items

@@ -1,6 +1,6 @@
 import pytest
 
-from eryndor.enums import ItemRarity, ItemType, EquipmentSlot
+from eryndor.enums import ItemRarity, ItemType, EquipmentSlot, StatType
 from eryndor.item import Item
 
 
@@ -14,6 +14,7 @@ def test_item(item: Item) -> None:
     assert item.rarity is ItemRarity.COMMON
     assert item.value == 10
     assert item.slot is EquipmentSlot.MAIN_HAND
+    assert item.stats[StatType.ATTACK] == 5
 
 
 ### ---------- Item Name Tests ---------- ###
@@ -205,4 +206,29 @@ def test_item_invalid_equipment_slots(
             ItemRarity.COMMON,
             10,
             slot,
+        )
+
+
+@pytest.mark.parametrize(
+    "stat_type",
+    [
+        StatType.ATTACK,
+        StatType.DEFENSE,
+        StatType.HEALTH,
+    ],
+)
+def test_negative_stat_type_values(stat_type: StatType) -> None:
+    """Tests invalid values for different stat types."""
+    with pytest.raises(ValueError, match="Item stats cannot be negative."):
+        Item(
+            "item-001",
+            "Novice Sword",
+            "A basic sword.",
+            ItemType.WEAPON,
+            ItemRarity.COMMON,
+            10,
+            EquipmentSlot.MAIN_HAND,
+            {
+                stat_type: -1,
+            },
         )

@@ -32,3 +32,21 @@ class Equipment:
 
         self.slots[item.slot] = item
         return unequip_item
+
+    def unequip_item(self, slot: EquipmentSlot) -> Item | None:
+        """Unequips an item in a slot if it is filled and returns the item."""
+        if self.slots[slot] is None:
+            return None
+
+        unequip_item: Item | None = self.slots[slot]
+
+        self.slots[slot] = None
+        return unequip_item
+
+    def get_item(self, slot: EquipmentSlot) -> Item | None:
+        """Returns the item currently equipped in the specified slot."""
+        return self.slots[slot]
+
+    def is_slot_occupied(self, slot: EquipmentSlot) -> bool:
+        """Checks to see if a slot has an equipped item."""
+        return self.slots[slot] is not None

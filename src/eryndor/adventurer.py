@@ -1,4 +1,4 @@
-from eryndor.enums import AdventurerClass, AdventurerStatus, ItemType
+from eryndor.enums import AdventurerClass, AdventurerStatus, EquipmentSlot
 from eryndor.equipment import Equipment
 from eryndor.inventory import Inventory
 from eryndor.item import Item
@@ -111,3 +111,15 @@ class Adventurer:
             self.inventory.add_item(unequipped_item)
 
         return True
+
+    def unequip_item(self, slot: EquipmentSlot) -> bool:
+        """Attempts to unequip an item if an item is equipped in the slot and return it to the inventory."""
+        if self.inventory.is_full:
+            return False
+
+        unequipped_item: Item | None = self.equipment.unequip_item(slot)
+
+        if unequipped_item is None:
+            return False
+
+        return self.inventory.add_item(unequipped_item)
