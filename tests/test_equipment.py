@@ -1,6 +1,5 @@
 import pytest
 
-from eryndor.adventurer import Adventurer
 from eryndor.enums import EquipmentSlot, ItemRarity, ItemType, StatType
 from eryndor.equipment import Equipment
 from eryndor.item import Item

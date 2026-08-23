@@ -1,7 +1,7 @@
 import pytest
 
 from eryndor.adventurer import Adventurer
-from eryndor.enums import AdventurerClass, AdventurerStatus, ItemType, ItemRarity, EquipmentSlot
+from eryndor.enums import AdventurerClass, AdventurerStatus, EquipmentSlot, ItemRarity, ItemType
 from eryndor.equipment import Equipment
 from eryndor.inventory import Inventory
 from eryndor.item import Item
@@ -208,7 +208,8 @@ def test_gain_experience(adventurer: Adventurer) -> None:
 def test_receive_reward_exp_and_items_no_unclaimed_items(
     adventurer: Adventurer, reward_with_item: Reward
 ) -> None:
-    """Tests that the adventurer successfully receives both the exp and item from receive rewards."""
+    """Tests that the adventurer successfully receives both the exp and item from receive
+    rewards."""
     adventurer.receive_reward(reward_with_item)
 
     assert adventurer.experience == 100

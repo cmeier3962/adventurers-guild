@@ -113,7 +113,8 @@ class Adventurer:
         return True
 
     def unequip_item(self, slot: EquipmentSlot) -> bool:
-        """Attempts to unequip an item if an item is equipped in the slot and return it to the inventory."""
+        """Attempts to unequip an item if an item is equipped in the slot and return it to the
+        inventory."""
         if self.inventory.is_full:
             return False
 

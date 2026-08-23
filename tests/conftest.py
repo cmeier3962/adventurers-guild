@@ -1,7 +1,7 @@
 import pytest
 
 from eryndor.adventurer import Adventurer
-from eryndor.enums import AdventurerClass, ItemRarity, ItemType, EquipmentSlot, StatType
+from eryndor.enums import AdventurerClass, EquipmentSlot, ItemRarity, ItemType, StatType
 from eryndor.item import Item
 from eryndor.party import Party
 from eryndor.reward import Reward

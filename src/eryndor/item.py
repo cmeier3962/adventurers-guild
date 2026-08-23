@@ -1,4 +1,4 @@
-from eryndor.enums import ItemRarity, ItemType, EquipmentSlot, StatType
+from eryndor.enums import EquipmentSlot, ItemRarity, ItemType, StatType
 
 
 class Item:
