@@ -3,7 +3,7 @@ from eryndor.item import Item
 
 
 class Equipment:
-    """Creates and manages an Adventurers equipment."""
+    """Creates and manages an adventurer's equipment."""
 
     def __init__(self) -> None:
         self.slots: dict[EquipmentSlot, Item | None] = {

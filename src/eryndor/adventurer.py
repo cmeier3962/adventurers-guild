@@ -27,7 +27,7 @@ class Adventurer:
 
         self.adventurer_class = adventurer_class
 
-        self.inventory = inventory if inventory else Inventory()
+        self.inventory = inventory if inventory is not None else Inventory()
 
         self.equipment = Equipment()
 

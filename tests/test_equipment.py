@@ -119,7 +119,97 @@ def test_is_slot_occupied(item: Item) -> None:
 
 ### ---------- Stat Tests ---------- ###
 def test_get_total_stat_no_equipment() -> None:
-    """Tests that having no equipment returns 0 for any stats."""
+    """Tests that having no equipment returns an empty stat dictionary."""
     equipment = Equipment()
 
     assert equipment.get_total_stats() == {}
+
+
+def test_get_total_stats_single_item(item: Item) -> None:
+    """Tests that equipment returns stats from a single equipped item."""
+    equipment = Equipment()
+
+    equipment.equip_item(item)
+
+    assert equipment.get_total_stats() == {
+        StatType.ATTACK: 5,
+    }
+
+
+def test_get_total_stats_multiple_stats() -> None:
+    """Tests that equipment returns multiple stats from equipped items."""
+    equipment = Equipment()
+
+    sword = Item(
+        "item-001",
+        "Test Sword",
+        "A test sword.",
+        ItemType.WEAPON,
+        ItemRarity.COMMON,
+        10,
+        EquipmentSlot.MAIN_HAND,
+        {
+            StatType.ATTACK: 5,
+        },
+    )
+
+    helmet = Item(
+        "item-002",
+        "Test Helmet",
+        "A test helmet.",
+        ItemType.ARMOR,
+        ItemRarity.COMMON,
+        10,
+        EquipmentSlot.HEAD,
+        {
+            StatType.DEFENSE: 10,
+            StatType.HEALTH: 25,
+        },
+    )
+
+    equipment.equip_item(sword)
+    equipment.equip_item(helmet)
+
+    assert equipment.get_total_stats() == {
+        StatType.ATTACK: 5,
+        StatType.DEFENSE: 10,
+        StatType.HEALTH: 25,
+    }
+
+
+def test_get_total_stats_same_stat_stacking() -> None:
+    """Tests that matching stats from different items are combined."""
+    equipment = Equipment()
+
+    sword = Item(
+        "item-001",
+        "Test Sword",
+        "A test sword.",
+        ItemType.WEAPON,
+        ItemRarity.COMMON,
+        10,
+        EquipmentSlot.MAIN_HAND,
+        {
+            StatType.ATTACK: 5,
+        },
+    )
+
+    ring = Item(
+        "item-002",
+        "Test Ring",
+        "A test ring.",
+        ItemType.ACCESSORY,
+        ItemRarity.COMMON,
+        10,
+        EquipmentSlot.RING_1,
+        {
+            StatType.ATTACK: 3,
+        },
+    )
+
+    equipment.equip_item(sword)
+    equipment.equip_item(ring)
+
+    assert equipment.get_total_stats() == {
+        StatType.ATTACK: 8,
+    }
