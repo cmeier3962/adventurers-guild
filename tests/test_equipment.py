@@ -1,7 +1,7 @@
 import pytest
 
 from eryndor.adventurer import Adventurer
-from eryndor.enums import EquipmentSlot, ItemRarity, ItemType
+from eryndor.enums import EquipmentSlot, ItemRarity, ItemType, StatType
 from eryndor.equipment import Equipment
 from eryndor.item import Item
 
@@ -115,3 +115,11 @@ def test_is_slot_occupied(item: Item) -> None:
     equipment.equip_item(item)
 
     assert equipment.is_slot_occupied(EquipmentSlot.MAIN_HAND)
+
+
+### ---------- Stat Tests ---------- ###
+def test_get_total_stat_no_equipment() -> None:
+    """Tests that having no equipment returns 0 for any stats."""
+    equipment = Equipment()
+
+    assert equipment.get_total_stats() == {}
