@@ -1,10 +1,11 @@
 import pytest
 
 from eryndor.adventurer import Adventurer
-from eryndor.enums import AdventurerClass, EquipmentSlot, ItemRarity, ItemType, StatType
+from eryndor.enums import AdventurerClass, EquipmentSlot, ItemRarity, ItemType
 from eryndor.item import Item
 from eryndor.party import Party
 from eryndor.reward import Reward
+from eryndor.stats import Stats, StatType
 
 
 @pytest.fixture
@@ -24,9 +25,11 @@ def item() -> Item:
         ItemRarity.COMMON,
         10,
         EquipmentSlot.MAIN_HAND,
-        {
-            StatType.ATTACK: 5,
-        },
+        Stats(
+            {
+                StatType.ATTACK: 5,
+            },
+        ),
     )
 
 

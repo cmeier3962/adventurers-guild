@@ -1,5 +1,6 @@
-from eryndor.enums import EquipmentSlot, StatType
+from eryndor.enums import EquipmentSlot
 from eryndor.item import Item
+from eryndor.stats import Stats
 
 
 class Equipment:
@@ -51,16 +52,13 @@ class Equipment:
         """Checks to see if a slot has an equipped item."""
         return self.slots[slot] is not None
 
-    def get_total_stats(self) -> dict[StatType, int]:
+    def get_total_stats(self) -> Stats:
         """Returns the sum of all stats of equipped items."""
-        stat_totals: dict[StatType, int] = {}
+        total_stats = Stats()
 
         for item in self.slots.values():
             if item is not None:
-                for stat, value in item.stats.items():
-                    if stat not in stat_totals:
-                        stat_totals[stat] = 0
+                for stat, value in item.stats.values.items():
+                    total_stats.add_stat(stat, value)
 
-                    stat_totals[stat] += value
-
-        return stat_totals
+        return total_stats
