@@ -1,16 +1,7 @@
 from enum import StrEnum
 
 
-class AdventurerClass(StrEnum):
-    """Available adventurer classes."""
-
-    WARRIOR = "Warrior"
-    MAGE = "Mage"
-    ROGUE = "Rogue"
-    CLERIC = "Cleric"
-    RANGER = "Ranger"
-
-
+# ---------- Adventurer ---------- #
 class AdventurerStatus(StrEnum):
     """Available statuses for adventurers."""
 
@@ -20,6 +11,7 @@ class AdventurerStatus(StrEnum):
     RETIRED = "Retired"
 
 
+# ---------- Quest ---------- #
 class QuestDifficulty(StrEnum):
     """Available difficulties for quests."""
 
@@ -38,6 +30,7 @@ class QuestStatus(StrEnum):
     COMPLETED = "Completed"
 
 
+# ---------- Items / Equipment ---------- #
 class ItemType(StrEnum):
     """Available item categories."""
 
@@ -51,7 +44,7 @@ class ItemType(StrEnum):
 
 
 class ItemRarity(StrEnum):
-    """Available rarities for item drops."""
+    """Available item rarities."""
 
     COMMON = "Common"
     UNCOMMON = "Uncommon"
@@ -75,3 +68,55 @@ class EquipmentSlot(StrEnum):
     AMULET = "Amulet"
     MAIN_HAND = "Main Hand"
     OFF_HAND = "Off Hand"
+
+
+# ---------- Stats ---------- #
+class StatType(StrEnum):
+    """Available statistics used throughout Eryndor."""
+
+    HEALTH = "Health"
+    ATTACK = "Attack"
+    DEFENSE = "Defense"
+
+
+# ---------- Jobs ---------- #
+class RoleType(StrEnum):
+    """Available job roles."""
+
+    TANK = "Tank"
+    HEALER = "Healer"
+    DPS = "DPS"
+
+
+class DamageStyle(StrEnum):
+    """Available combat damage styles."""
+
+    MELEE = "Melee"
+    MARKSMAN = "Marksman"
+    ARCANE = "Arcane"
+
+
+class JobCategory(StrEnum):
+    """Available job categories."""
+
+    COMBAT = "Combat"
+    GATHERING = "Gathering"
+    CRAFTING = "Crafting"
+
+
+class JobTier(StrEnum):
+    """Available job tiers."""
+
+    FOUNDATION = "Foundation"
+    ADVANCED = "Advanced"
+
+
+class JobType(StrEnum):
+    """Available jobs."""
+
+    # Foundation Jobs
+    DEFENDER = "Defender"
+    ACOLYTE = "Acolyte"
+    MARTIALIST = "Martialist"
+    MARKSMAN = "Marksman"
+    MYSTIC = "Mystic"

@@ -1,7 +1,7 @@
 import pytest
 
 from eryndor.adventurer import Adventurer
-from eryndor.enums import AdventurerClass, QuestDifficulty, QuestStatus
+from eryndor.enums import JobType, QuestDifficulty, QuestStatus
 from eryndor.item import Item
 from eryndor.party import Party
 from eryndor.quest import Quest
@@ -228,7 +228,7 @@ def test_party_already_assigned_quest(
 ) -> None:
     """Tests that a quest cannot be assigned another party."""
     party2 = Party("67890", "Box's Party")
-    adventurer2 = Adventurer("adv-002", "Box", AdventurerClass.WARRIOR)
+    adventurer2 = Adventurer("adv-002", "Box", JobType.MARTIALIST)
 
     party2.add_member(adventurer2)
     party2.assign_leader(adventurer2)
