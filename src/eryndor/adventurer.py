@@ -7,7 +7,7 @@ from eryndor.reward import Reward
 
 
 class Adventurer:
-    """Creates an adventurer object with basic character information and statistics."""
+    """Creates an adventurer object with identity, inventory, equipment, and progression."""
 
     def __init__(
         self,
