@@ -1,4 +1,5 @@
-from eryndor.enums import EquipmentSlot, ItemRarity, ItemType, StatType
+from eryndor.enums import EquipmentSlot, ItemRarity, ItemType
+from eryndor.stats import Stats
 
 
 class Item:
@@ -13,7 +14,7 @@ class Item:
         rarity: ItemRarity,
         value: int,
         slot: EquipmentSlot | None = None,
-        stats: dict[StatType, int] | None = None,
+        stats: Stats | None = None,
     ) -> None:
         self.id = item_id
 
@@ -68,10 +69,4 @@ class Item:
             raise ValueError("Item can only be equipped in an accessory slot.")
         self.slot = slot
 
-        if stats is None:
-            self.stats = {}
-        else:
-            for value in stats.values():
-                if value < 0:
-                    raise ValueError("Item stats cannot be negative.")
-            self.stats = dict(stats)
+        self.stats = stats if stats is not None else Stats()

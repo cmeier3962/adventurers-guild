@@ -1,8 +1,9 @@
 import pytest
 
-from eryndor.enums import EquipmentSlot, ItemRarity, ItemType, StatType
+from eryndor.enums import EquipmentSlot, ItemRarity, ItemType
 from eryndor.equipment import Equipment
 from eryndor.item import Item
+from eryndor.stats import Stats, StatType
 
 
 ### ---------- Initialization Tests ---------- ###
@@ -121,7 +122,7 @@ def test_get_total_stat_no_equipment() -> None:
     """Tests that having no equipment returns an empty stat dictionary."""
     equipment = Equipment()
 
-    assert equipment.get_total_stats() == {}
+    assert equipment.get_total_stats().get_stat(StatType.ATTACK) == 0
 
 
 def test_get_total_stats_single_item(item: Item) -> None:
@@ -130,9 +131,7 @@ def test_get_total_stats_single_item(item: Item) -> None:
 
     equipment.equip_item(item)
 
-    assert equipment.get_total_stats() == {
-        StatType.ATTACK: 5,
-    }
+    assert equipment.get_total_stats().get_stat(StatType.ATTACK) == 5
 
 
 def test_get_total_stats_multiple_stats() -> None:
@@ -147,9 +146,11 @@ def test_get_total_stats_multiple_stats() -> None:
         ItemRarity.COMMON,
         10,
         EquipmentSlot.MAIN_HAND,
-        {
-            StatType.ATTACK: 5,
-        },
+        Stats(
+            {
+                StatType.ATTACK: 5,
+            },
+        ),
     )
 
     helmet = Item(
@@ -160,20 +161,20 @@ def test_get_total_stats_multiple_stats() -> None:
         ItemRarity.COMMON,
         10,
         EquipmentSlot.HEAD,
-        {
-            StatType.DEFENSE: 10,
-            StatType.HEALTH: 25,
-        },
+        Stats(
+            {
+                StatType.DEFENSE: 10,
+                StatType.HEALTH: 25,
+            },
+        ),
     )
 
     equipment.equip_item(sword)
     equipment.equip_item(helmet)
 
-    assert equipment.get_total_stats() == {
-        StatType.ATTACK: 5,
-        StatType.DEFENSE: 10,
-        StatType.HEALTH: 25,
-    }
+    assert equipment.get_total_stats().get_stat(StatType.HEALTH) == 25
+    assert equipment.get_total_stats().get_stat(StatType.ATTACK) == 5
+    assert equipment.get_total_stats().get_stat(StatType.DEFENSE) == 10
 
 
 def test_get_total_stats_same_stat_stacking() -> None:
@@ -188,9 +189,11 @@ def test_get_total_stats_same_stat_stacking() -> None:
         ItemRarity.COMMON,
         10,
         EquipmentSlot.MAIN_HAND,
-        {
-            StatType.ATTACK: 5,
-        },
+        Stats(
+            {
+                StatType.ATTACK: 5,
+            },
+        ),
     )
 
     ring = Item(
@@ -201,14 +204,14 @@ def test_get_total_stats_same_stat_stacking() -> None:
         ItemRarity.COMMON,
         10,
         EquipmentSlot.RING_1,
-        {
-            StatType.ATTACK: 3,
-        },
+        Stats(
+            {
+                StatType.ATTACK: 3,
+            },
+        ),
     )
 
     equipment.equip_item(sword)
     equipment.equip_item(ring)
 
-    assert equipment.get_total_stats() == {
-        StatType.ATTACK: 8,
-    }
+    assert equipment.get_total_stats().get_stat(StatType.ATTACK) == 8
