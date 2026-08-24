@@ -1,318 +1,194 @@
-# Eryndor: The Shattered Veil
+# Eryndor
 
-Eryndor is a Python learning project focused on building a growing
-fantasy RPG domain model through object-oriented design, testing, and
-incremental system development.
+Eryndor is a Python-based RPG foundation project focused on learning
+object-oriented programming, software architecture, testing practices,
+and game system design.
 
-The project currently models adventurers, parties, quests, items,
-inventories, rewards, character progression, and equipment systems.
+The goal of this project is to build a scalable RPG framework inspired
+by games such as RuneScape, Final Fantasy XIV, and other MMO/RPG systems
+while continuously improving code quality and design patterns.
 
-The long-term goal is to expand Eryndor into a larger RPG system with
-equipment, combat, enemies, bosses, dungeons, loot systems, crafting,
-persistence, APIs, and potentially a game client.
-
-------------------------------------------------------------------------
-
-# Current Features
-
-## Adventurers
-
-Adventurers currently have:
-
--   a unique ID
--   a validated username
--   an adventurer class
--   a status
--   an inventory
--   an equipment system
--   a progression component
--   derived experience and level properties
--   a collection of unclaimed reward items
-
-Available adventurer classes:
-
--   Warrior
--   Mage
--   Rogue
--   Cleric
--   Ranger
-
-Supported behaviors include:
-
--   receiving items through their inventory
--   equipping and unequipping equipment
--   gaining experience through progression
--   receiving rewards
--   preserving reward items that do not fit in inventory
--   retrying unclaimed items when inventory space becomes available
-
-Each adventurer receives their own inventory, equipment, and progression
-objects.
+This project is currently focused on backend game logic and domain
+modeling. Future goals may include transitioning concepts into C++ and
+Unreal Engine as a long-term game development learning project.
 
 ------------------------------------------------------------------------
 
-## Items
+## Current Features
 
-Items currently have:
+### Adventurer System
 
--   a unique ID
--   a validated name
--   a validated description
--   an item type
--   a rarity
--   a value
--   an optional equipment slot
--   optional stat bonuses
+-   Adventurer creation and validation
+-   Adventurer classes
+-   Adventurer status management
+-   Experience and progression tracking
+-   Inventory and equipment ownership
 
-Available item types:
+### Inventory System
 
--   Weapon
--   Armor
--   Accessory
--   Consumable
--   Material
--   Quest
--   Currency
+-   Configurable inventory capacity
+-   Add and remove item functionality
+-   Inventory space validation
+-   Support for unclaimed items when inventory space is unavailable
 
-Available stat types:
+### Item System
 
--   Attack
--   Defense
--   Health
+-   Item creation and validation
+-   Item types:
+    -   Weapons
+    -   Armor
+    -   Accessories
+    -   Consumables
+-   Item rarity system
+-   Equipment slot validation
+-   Item stat bonuses
 
-Available equipment slots:
+### Equipment System
 
--   Head
--   Chest
--   Hands
--   Legs
--   Feet
--   Back
--   Ring 1
--   Ring 2
--   Amulet
--   Main Hand
--   Off Hand
+-   Equipment slot management:
+    -   Head
+    -   Chest
+    -   Hands
+    -   Legs
+    -   Feet
+    -   Back
+    -   Ring 1
+    -   Ring 2
+    -   Amulet
+    -   Main Hand
+    -   Off Hand
+-   Equipping and unequipping items
+-   Replacing existing equipped items
+-   Equipment stat aggregation
 
-Current equipment-slot rules:
+### Stats System
 
--   Weapons may use Main Hand or Off Hand
--   Armor may use Head, Chest, Hands, Legs, or Feet
--   Accessories may use Back, Ring 1, Ring 2, or Amulet
--   Weapons, armor, and accessories must have an equipment slot
--   Non-equippable item types cannot have an equipment slot
--   Invalid item-type and equipment-slot combinations raise an error
+-   Reusable stat management system
+-   Supported statistics:
+    -   Health
+    -   Attack
+    -   Defense
+-   Adding and retrieving stat values
+-   Validation against invalid negative stat values
+-   Designed to support future adventurer stats, equipment bonuses,
+    buffs, and derived statistics
 
-Items can provide stat bonuses through a flexible stat dictionary.
+### Quest and Reward Systems
 
-Example:
-
-``` text
-Novice Sword:
-    Attack +5
-
-Iron Helmet:
-    Defense +10
-    Health +25
-```
-
-Item stats provide the foundation for future systems including:
-
--   combat calculations
--   character attributes
--   equipment bonuses
--   set bonuses
--   item effects
+-   Quest creation and progression
+-   Reward handling
+-   Experience rewards
+-   Item rewards
+-   Handling unclaimed rewards when inventory space is unavailable
 
 ------------------------------------------------------------------------
 
-## Equipment System
+## Development Tools
 
-The equipment system allows adventurers to equip items into dedicated
-equipment slots.
+This project uses modern Python development practices:
 
-Current functionality includes:
-
--   dedicated `Equipment` component
--   equipment slot tracking
--   equipping items
--   replacing already equipped items
--   unequipping items
--   returning unequipped items to inventory
--   checking occupied equipment slots
--   calculating combined equipment stats
-
-The equipment structure is:
-
-``` text
-Adventurer
-├── Inventory
-├── Progression
-├── Equipment
-└── Unclaimed Items
-```
-
-Equipment currently supports:
-
--   Head
--   Chest
--   Hands
--   Legs
--   Feet
--   Back
--   Ring 1
--   Ring 2
--   Amulet
--   Main Hand
--   Off Hand
-
-Current behaviors:
-
--   Equipping an item removes it from inventory.
--   Equipping an item into an occupied slot returns the previous item.
--   Unequipping an item returns it to inventory.
--   Equipment calculates total bonuses from currently equipped items.
-
-Future equipment behavior may include:
-
--   two-handed weapons
--   shields
--   dual wielding
--   class or level requirements
--   item durability
--   set bonuses
--   legendary effects
-
-------------------------------------------------------------------------
-
-# Current Architecture
-
-``` text
-Adventurer
-├── Inventory
-│   └── Items
-├── Progression
-│   ├── Experience
-│   └── Derived Level
-├── Equipment
-│   └── Equipped Items
-└── Unclaimed Items
-
-Party
-└── Adventurers
-
-Quest
-├── Party
-└── Reward
-    ├── Experience
-    └── Items
-
-Item
-├── ItemType
-├── ItemRarity
-├── EquipmentSlot
-└── Stats
-    ├── Attack
-    ├── Defense
-    └── Health
-```
-
-A major design goal is to keep responsibilities separated between
-reusable components rather than placing all game logic directly inside
-`Adventurer`.
-
-------------------------------------------------------------------------
-
-# Project Structure
-
-``` text
-.
-├── src/
-│   └── eryndor/
-│       ├── __init__.py
-│       ├── adventurer.py
-│       ├── equipment.py
-│       ├── enums.py
-│       ├── inventory.py
-│       ├── item.py
-│       ├── party.py
-│       ├── progression.py
-│       ├── quest.py
-│       └── reward.py
-├── tests/
-│   ├── conftest.py
-│   ├── test_adventurer.py
-│   ├── test_equipment.py
-│   ├── test_inventory.py
-│   ├── test_item.py
-│   ├── test_party.py
-│   ├── test_progression.py
-│   ├── test_quest.py
-│   └── test_reward.py
-├── README.md
-└── pyproject.toml
-```
-
-------------------------------------------------------------------------
-
-# Testing and Code Quality
-
-The project uses:
-
--   pytest
--   pytest-cov
--   shared pytest fixtures through `conftest.py`
--   parametrized tests where multiple inputs share the same behavior
+-   Python 3.14
+-   uv for environment and dependency management
+-   pytest for testing
+-   pytest-cov for coverage reporting
 -   Ruff for linting and formatting
 -   Pyright for static type checking
--   uv for Python environment and dependency management
-
-The project currently maintains full test coverage while new systems are
-developed incrementally.
-
-Typical local checks:
-
-``` powershell
-ruff check .
-ruff format .
-pyright
-pytest
-```
+-   GitHub Actions for continuous integration
 
 ------------------------------------------------------------------------
 
-# Learning Goals
+## Testing
 
-Eryndor is being built primarily as a hands-on learning project.
+The project uses automated tests to validate functionality and prevent
+regressions.
 
-Current learning areas include:
+Current testing includes:
 
--   object-oriented programming
--   domain modeling
--   class composition
--   delegation
--   dependency injection
--   separation of responsibilities
--   derived properties and single sources of truth
--   enums and state transitions
--   type annotations
--   validation and exception handling
--   mutable-object behavior
--   collection handling
--   pytest unit testing
--   parametrized testing
--   reusable pytest fixtures
--   branch coverage
--   dependency management with uv
--   linting and formatting with Ruff
--   static type checking with Pyright
--   Git and GitHub workflows
--   feature-branch development
--   software architecture and system design
--   designing interconnected game systems
--   composition over inheritance
--   aggregating and calculating derived data
--   future API development with FastAPI
+-   Object initialization
+-   Validation rules
+-   Success and failure cases
+-   Edge cases
+-   Integration between systems
 
-The project intentionally starts with simple implementations and
-revisits earlier systems for refactoring as new requirements emerge.
+The project maintains 100% test coverage.
+
+------------------------------------------------------------------------
+
+## Project Structure
+
+    src/
+    └── eryndor/
+        ├── adventurer.py
+        ├── equipment.py
+        ├── enums.py
+        ├── inventory.py
+        ├── item.py
+        ├── progression.py
+        ├── quest.py
+        ├── reward.py
+        └── stats.py
+
+    tests/
+    ├── test_adventurer.py
+    ├── test_equipment.py
+    ├── test_inventory.py
+    ├── test_item.py
+    ├── test_party.py
+    ├── test_progression.py
+    ├── test_quest.py
+    ├── test_reward.py
+    └── test_stats.py
+
+------------------------------------------------------------------------
+
+## Future Roadmap
+
+Planned systems include:
+
+### Character Development
+
+-   Base adventurer statistics
+-   Level-based stat growth
+-   Character attributes
+-   Class-specific progression
+-   Derived statistics
+
+### Combat Systems
+
+-   Damage calculations
+-   Attack and defense mechanics
+-   Critical hits
+-   Abilities and skills
+-   Status effects
+
+### RPG Systems
+
+-   Enemies and creatures
+-   Boss encounters
+-   Dungeons
+-   Loot tables
+-   Crafting
+-   Economy systems
+
+### Long-Term Goals
+
+-   Rebuild core systems in C++
+-   Learn Unreal Engine development
+-   Create a playable 3D RPG prototype
+-   Integrate art, assets, and gameplay systems
+
+------------------------------------------------------------------------
+
+## Development Philosophy
+
+Eryndor is built incrementally with a focus on:
+
+-   Clean object-oriented design
+-   Separation of responsibilities
+-   Maintainable architecture
+-   Strong typing
+-   Automated testing
+-   Continuous refactoring
+
+The goal is not only to create a game system, but to learn the
+engineering principles behind building large-scale software.

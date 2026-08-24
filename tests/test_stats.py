@@ -106,3 +106,20 @@ def test_add_stat_negative_value_is_invalid() -> None:
 
     with pytest.raises(ValueError, match="Stats cannot contain negative values."):
         stats.add_stat(StatType.ATTACK, -5)
+
+
+def test_stats_add_stat_does_not_modify_other_stats() -> None:
+    """Tests adding a stat does not modify unrelated stats."""
+    stats = Stats(
+        {
+            StatType.DEFENSE: 10,
+        }
+    )
+
+    stats.add_stat(
+        StatType.ATTACK,
+        5,
+    )
+
+    assert stats.get_stat(StatType.DEFENSE) == 10
+    assert stats.get_stat(StatType.ATTACK) == 5
