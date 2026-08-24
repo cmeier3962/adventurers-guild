@@ -1,7 +1,7 @@
 import pytest
 
 from eryndor.adventurer import Adventurer
-from eryndor.enums import AdventurerClass, AdventurerStatus
+from eryndor.enums import AdventurerStatus, JobType
 from eryndor.party import Party
 
 
@@ -130,7 +130,7 @@ def test_remove_member_not_in_party(
 def test_add_member_to_full_party() -> None:
     """Tests adding an adventurer to a full party."""
     adventurers = [
-        Adventurer(f"adv-00{i}", name, AdventurerClass.WARRIOR)
+        Adventurer(f"adv-00{i}", name, JobType.MARTIALIST)
         for i, name in enumerate(["Nox", "Box", "Fox", "Sox", "Pox"], start=1)
     ]
 
@@ -159,7 +159,7 @@ def test_new_party_is_not_full(empty_party: Party) -> None:
 def test_party_is_full_at_max_members() -> None:
     """Tests that party is full at max members."""
     adventurers = [
-        Adventurer(f"adv-00{i}", name, AdventurerClass.WARRIOR)
+        Adventurer(f"adv-00{i}", name, JobType.MARTIALIST)
         for i, name in enumerate(["Nox", "Box", "Fox", "Sox"], start=1)
     ]
 
@@ -230,7 +230,7 @@ def test_assign_new_leader_from_existing(
     party: Party,
 ) -> None:
     """Tests that a party cannot assign a second leader."""
-    adventurer = Adventurer("adv-002", "Box", AdventurerClass.WARRIOR)
+    adventurer = Adventurer("adv-002", "Box", JobType.MARTIALIST)
 
     party.add_member(adventurer)
 
@@ -261,7 +261,7 @@ def test_change_leader_not_in_party(
     party: Party,
 ) -> None:
     """Tests changing leader fails if adventurer is not in the party."""
-    adventurer = Adventurer("adv-002", "Box", AdventurerClass.WARRIOR)
+    adventurer = Adventurer("adv-002", "Box", JobType.MARTIALIST)
 
     with pytest.raises(
         ValueError,
@@ -303,7 +303,7 @@ def test_change_leader_already_leader(
 
 def test_change_leader(party: Party) -> None:
     """Tests changing leader updates to another party member."""
-    adventurer = Adventurer("adv-002", "Box", AdventurerClass.WARRIOR)
+    adventurer = Adventurer("adv-002", "Box", JobType.MARTIALIST)
 
     party.add_member(adventurer)
     party.change_leader(adventurer)

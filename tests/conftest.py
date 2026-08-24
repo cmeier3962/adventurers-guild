@@ -1,7 +1,7 @@
 import pytest
 
 from eryndor.adventurer import Adventurer
-from eryndor.enums import AdventurerClass, EquipmentSlot, ItemRarity, ItemType
+from eryndor.enums import EquipmentSlot, ItemRarity, ItemType, JobType
 from eryndor.item import Item
 from eryndor.party import Party
 from eryndor.reward import Reward
@@ -11,7 +11,7 @@ from eryndor.stats import Stats, StatType
 @pytest.fixture
 def adventurer() -> Adventurer:
     """Returns a valid adventurer."""
-    return Adventurer("adv-001", "Nox", AdventurerClass.WARRIOR)
+    return Adventurer("adv-001", "Nox", JobType.MARTIALIST)
 
 
 @pytest.fixture

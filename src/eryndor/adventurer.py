@@ -1,4 +1,4 @@
-from eryndor.enums import AdventurerClass, AdventurerStatus, EquipmentSlot
+from eryndor.enums import AdventurerStatus, EquipmentSlot, JobType
 from eryndor.equipment import Equipment
 from eryndor.inventory import Inventory
 from eryndor.item import Item
@@ -13,7 +13,7 @@ class Adventurer:
         self,
         adventurer_id: str,
         username: str,
-        adventurer_class: AdventurerClass,
+        job_type: JobType,
         inventory: Inventory | None = None,
     ) -> None:
         self.id = adventurer_id
@@ -25,7 +25,7 @@ class Adventurer:
             raise ValueError("Username must be between 3 and 15 characters.")
         self.username = username_formatted
 
-        self.adventurer_class = adventurer_class
+        self.job_type = job_type
 
         self.inventory = inventory if inventory is not None else Inventory()
 
